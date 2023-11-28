@@ -1,0 +1,10 @@
+{
+  "name": "typed-assistant",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {},
+  "dependencies": {},
+  "devDependencies": {}
+}

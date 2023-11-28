@@ -1,0 +1,35 @@
+name: TypedAssistant
+version: "1.0.1"
+ports:
+  3822/tcp: 3822
+slug: typed-assistant
+init: false
+description: Automate Home Assistant with TypeScript.
+url: "https://github.com/TypedAssistant/TypedAssistant"
+arch:
+  - armhf
+  - armv7
+  - aarch64
+  - amd64
+  - i386
+map:
+  - addons:rw
+startup: services
+hassio_role: manager
+hassio_api: true
+homeassistant_api: true
+boot: auto
+options:
+  hassToken: null
+  hassUrl: "http://192.168.86.11:8123"
+  githubToken: null
+  githubUsername: null
+  githubRepo: null
+  githubBranch: "main"
+schema:
+  hassToken: "str?"
+  hassUrl: "str?"
+  githubToken: "str?"
+  githubUsername: "str?"
+  githubRepo: "str?"
+  githubBranch: "str?"
