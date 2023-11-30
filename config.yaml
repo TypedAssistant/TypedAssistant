@@ -1,5 +1,5 @@
 name: TypedAssistant
-version: "1.0.1"
+version: "1.0.2"
 ports:
   3822/tcp: 3822
 slug: typed-assistant

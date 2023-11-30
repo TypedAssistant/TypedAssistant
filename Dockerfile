@@ -41,8 +41,8 @@ RUN . /usr/local/bin/retry.sh && retry curl -fsSL https://code-server.dev/instal
 EXPOSE 8080
 # Run code-server in /run.sh
 
-COPY . /typed-assistant/
-WORKDIR /typed-assistant
+COPY . /TypedAssistant/
+WORKDIR /TypedAssistant
 
 RUN . /usr/local/bin/retry.sh && retry npm install -g bun
 
