@@ -47,7 +47,7 @@ WORKDIR /TypedAssistant
 RUN . /usr/local/bin/retry.sh && retry npm install -g bun
 
 # Run bun install in the /src directory
-RUN . /usr/local/bin/retry.sh && retry bun install
+# RUN . /usr/local/bin/retry.sh && retry bun install
 
 # Make sure run.sh is executable
 RUN chmod a+x /run.sh
