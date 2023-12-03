@@ -1,7 +1,8 @@
 name: TypedAssistant
-version: "1.0.4"
+version: "1.0.5"
 ports:
   3822/tcp: 3822
+  3823/tcp: 3823
 slug: typed-assistant
 init: false
 description: Automate Home Assistant with TypeScript.
@@ -20,6 +21,7 @@ hassio_api: true
 homeassistant_api: true
 boot: auto
 options:
+  commandToRun: "bun src/index.tsx"
   hassToken: null
   hassUrl: "http://192.168.86.11:8123"
   githubToken: null
@@ -27,6 +29,7 @@ options:
   githubRepo: null
   githubBranch: "main"
 schema:
+  commandToRun: "str?"
   hassToken: "str?"
   hassUrl: "str?"
   githubToken: "str?"

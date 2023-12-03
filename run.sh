@@ -2,6 +2,7 @@
 
 CONFIG_PATH=/data/options.json
 
+COMMAND_TO_RUN=$(jq --raw-output '.commandToRun // empty' $CONFIG_PATH)
 HASS_TOKEN_FROM_CONFIG=$(jq --raw-output '.hassToken // empty' $CONFIG_PATH)
 HASS_URL_FROM_CONFIG=$(jq --raw-output '.hassUrl // empty' $CONFIG_PATH)
 GITHUB_TOKEN_FROM_CONFIG=$(jq --raw-output '.githubToken // empty' $CONFIG_PATH)
@@ -13,6 +14,10 @@ GITHUB_BRANCH_FROM_CONFIG=$(jq --raw-output '.githubBranch // empty' $CONFIG_PAT
 export HASS_SERVER_TO_USE=${HASS_SERVER:-"$HASS_URL_FROM_CONFIG"}
 export HASS_TOKEN_TO_USE=${HASS_TOKEN:-"$HASS_TOKEN_FROM_CONFIG"}
 
+if [[ -z "$COMMAND_TO_RUN" ]]; then
+    echo "Error: COMMAND_TO_RUN is not set. Set this in Add-on configuration."
+    exit 1
+fi
 if [[ -z "$HASS_SERVER_TO_USE" ]]; then
     echo "Error: HASS_SERVER is not set. Please provide a value for HASS_SERVER."
     exit 1
@@ -44,6 +49,6 @@ GITHUB_REPO=$GITHUB_REPO_FROM_CONFIG \
 GITHUB_BRANCH=$GITHUB_BRANCH_FROM_CONFIG \
 HASS_SERVER=$HASS_SERVER_TO_USE \
 HASS_TOKEN=$HASS_TOKEN_TO_USE \
-bun run start & BUN_PID=$!
+$COMMAND_TO_RUN & BUN_PID=$!
 
 wait $CODE_SERVER_PID $BUN_PID
