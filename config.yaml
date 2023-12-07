@@ -1,5 +1,5 @@
 name: TypedAssistant
-version: "1.0.5"
+version: "1.0.6"
 ports:
   3822/tcp: 3822
   3823/tcp: 3823
@@ -19,6 +19,8 @@ startup: services
 hassio_role: manager
 hassio_api: true
 homeassistant_api: true
+ingress: true
+ingress_port: 3822
 boot: auto
 options:
   commandToRun: "bun src/index.tsx"
