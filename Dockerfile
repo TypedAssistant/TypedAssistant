@@ -27,11 +27,11 @@ RUN { \
 COPY run.sh /
 
 RUN echo "${ALPINE_MIRROR}/v3.18/main/" >> /etc/apk/repositories
-RUN . /usr/local/bin/retry.sh && retry apk add build-base git jq krb5-dev libsecret-dev make npm --repository="http://dl-cdn.alpinelinux.org/alpine/v3.18/main/"
-RUN npm install -g n
-RUN n 18
-RUN hash -r
-RUN node --version
+RUN . /usr/local/bin/retry.sh && retry apk add build-base git jq krb5-dev libsecret-dev make npm nodejs --repository="http://dl-cdn.alpinelinux.org/alpine/v3.18/main/"
+# RUN npm install -g n
+# RUN n 18
+# RUN hash -r
+# RUN node --version
 
 RUN apk --no-cache add ca-certificates wget
 RUN . /usr/local/bin/retry.sh && retry wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub
