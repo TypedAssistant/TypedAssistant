@@ -1,5 +1,5 @@
 name: TypedAssistant
-version: "1.0.21"
+version: "1.0.22"
 ports:
   3822/tcp: 3822
   3823/tcp: 3823
