@@ -1,5 +1,5 @@
 name: TypedAssistant
-version: "1.0.8"
+version: "1.0.9"
 ports:
   3822/tcp: 3822
   3823/tcp: 3823
@@ -20,7 +20,6 @@ hassio_role: manager
 hassio_api: true
 homeassistant_api: true
 ingress: true
-# ingress_port: 80
 webui: http://[HOST]:[PORT:3822]/proxy/8099/web
 boot: auto
 options:

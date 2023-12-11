@@ -13,6 +13,9 @@ GITHUB_BRANCH_FROM_CONFIG=$(jq --raw-output '.githubBranch // empty' $CONFIG_PAT
 
 export HASS_SERVER_TO_USE=${HASS_SERVER:-"$HASS_URL_FROM_CONFIG"}
 export HASS_TOKEN_TO_USE=${HASS_TOKEN:-"$HASS_TOKEN_FROM_CONFIG"}
+export SUPERVISOR_TOKEN="${SUPERVISOR_TOKEN}"
+
+echo "SUPERVISOR_TOKEN: ${SUPERVISOR_TOKEN}"
 
 if [[ -z "$COMMAND_TO_RUN" ]]; then
     echo "Error: COMMAND_TO_RUN is not set. Set this in Add-on configuration."
