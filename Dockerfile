@@ -38,7 +38,7 @@ RUN . /usr/local/bin/retry.sh && retry wget -q -O /etc/apk/keys/sgerrand.rsa.pub
 RUN . /usr/local/bin/retry.sh && retry wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk
 RUN apk update
 RUN apk add --no-cache --force-overwrite glibc-2.28-r0.apk 
-RUN apk add --no-cache --force-overwrite libstdc++ 
+RUN apk add --no-cache --force-overwrite libstdc++-dev
 RUN find / -name 'libstdc++.so.6'
 
 # Install VSCode server
