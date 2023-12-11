@@ -27,7 +27,7 @@ RUN { \
 COPY run.sh /
 
 RUN echo "${ALPINE_MIRROR}/v3.18/main/" >> /etc/apk/repositories
-RUN . /usr/local/bin/retry.sh && retry apk add build-base git jq krb5-dev libsecret-dev make nodejs npm --repository="http://dl-cdn.alpinelinux.org/alpine/v3.18/main/"
+RUN . /usr/local/bin/retry.sh && retry apk add build-base git jq krb5-dev libsecret-dev libstdc++ make nodejs npm --repository="http://dl-cdn.alpinelinux.org/alpine/v3.18/main/"
 RUN npm install -g n
 RUN n 18
 RUN hash -r
