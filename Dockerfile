@@ -40,6 +40,7 @@ RUN apk update
 RUN apk add --no-cache --force-overwrite glibc-2.28-r0.apk 
 RUN apk add --no-cache --force-overwrite libstdc++-dev
 RUN find / -name 'libstdc++.so.6'
+RUN ldd $(which node)
 
 # Install VSCode server
 RUN . /usr/local/bin/retry.sh && retry curl -fsSL https://code-server.dev/install.sh | sh
