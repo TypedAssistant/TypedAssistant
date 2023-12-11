@@ -39,6 +39,7 @@ RUN . /usr/local/bin/retry.sh && retry wget https://github.com/sgerrand/alpine-p
 RUN apk update
 RUN apk add --no-cache --force-overwrite glibc-2.28-r0.apk 
 RUN apk add --no-cache --force-overwrite libstdc++ 
+RUN find / -name 'libstdc++.so.6'
 
 # Install VSCode server
 RUN . /usr/local/bin/retry.sh && retry curl -fsSL https://code-server.dev/install.sh | sh
