@@ -43,8 +43,8 @@ fi
 cd /addons/TypedAssistant
 bun install
 
-code-server --bind-addr 0.0.0.0:3822 --auth none &
-CODE_SERVER_PID=$!;
+# code-server --bind-addr 0.0.0.0:3822 --auth none &
+# CODE_SERVER_PID=$!;
 
 GITHUB_TOKEN=$GITHUB_TOKEN_FROM_CONFIG \
 GITHUB_USERNAME=$GITHUB_USERNAME_FROM_CONFIG \
@@ -54,4 +54,5 @@ HASS_SERVER=$HASS_SERVER_TO_USE \
 HASS_TOKEN=$HASS_TOKEN_TO_USE \
 $COMMAND_TO_RUN & BUN_PID=$!
 
-wait $CODE_SERVER_PID $BUN_PID
+wait $BUN_PID
+# wait $CODE_SERVER_PID $BUN_PID

@@ -43,7 +43,7 @@ RUN find / -name 'libstdc++.so.6'
 # RUN ldd $(which node)
 
 # Install VSCode server
-RUN . /usr/local/bin/retry.sh && retry curl -fsSL https://code-server.dev/install.sh | sh
+# RUN . /usr/local/bin/retry.sh && retry curl -fsSL https://code-server.dev/install.sh | sh
 # Set the code-server port
 EXPOSE 8080
 # Run code-server in /run.sh
