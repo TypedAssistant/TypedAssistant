@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/with-contenv
 
 CONFIG_PATH=/data/options.json
 
