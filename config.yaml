@@ -1,5 +1,5 @@
 name: TypedAssistant
-version: "1.0.22"
+version: "1.0.23"
 ports:
   3822/tcp: 3822
   3823/tcp: 3823
@@ -16,7 +16,7 @@ arch:
 map:
   - addons:rw
 startup: services
-hassio_role: default
+hassio_role: manager
 hassio_api: true
 homeassistant_api: true
 ingress: true
