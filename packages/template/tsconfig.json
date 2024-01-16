@@ -1,0 +1,5 @@
+{
+  "extends": "@typed-assistant/typescript-config/react-app.json",
+  "include": ["src", "scripts", "src/.gen/type-register.ts"],
+  "exclude": ["node_modules", "dist"]
+}

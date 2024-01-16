@@ -1,0 +1,28 @@
+{
+  "overrides": [
+    {
+      "files": ["*.test.tsx"],
+      "rules": {
+        "@typescript-eslint/ban-ts-comment": "off"
+      }
+    }
+  ],
+  "extends": [
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended",
+    "plugin:react-hooks/recommended"
+  ],
+  "rules": {
+    "prefer-const": "off",
+    "react-hooks/exhaustive-deps": [
+      "warn",
+      {
+        "additionalHooks": "(useEffectButNotOnFirstRender|useEntitiesSubscription)"
+      }
+    ],
+    "@typescript-eslint/consistent-type-imports": "error"
+  },
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "root": true
+}

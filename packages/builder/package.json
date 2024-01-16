@@ -1,0 +1,31 @@
+{
+  "name": "@typed-assistant/builder",
+  "version": "0.0.0",
+  "exports": {
+    "./appProcess": "./src/appProcess.tsx",
+    "./bunInstall": "./src/bunInstall.tsx",
+    "./getSpawnText": "./src/getSpawnText.tsx",
+    "./pullChanges": "./src/pullChanges.tsx"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0"
+  },
+  "dependencies": {
+    "@mdi/svg": "^7.3.67",
+    "ignore": "^5.3.0"
+  },
+  "devDependencies": {
+    "@typed-assistant/eslint-config": "*",
+    "@typed-assistant/logger": "*",
+    "@typed-assistant/typescript-config": "*",
+    "@typed-assistant/utils": "*",
+    "@types/node": "^20.10.6",
+    "@types/eslint": "^8.56.1",
+    "eslint": "^8.56.0",
+    "home-assistant-js-websocket": "^8.2.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "home-assistant-js-websocket": "^8.2.0"
+  }
+}

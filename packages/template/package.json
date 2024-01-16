@@ -1,0 +1,33 @@
+{
+  "name": "@typed-assistant/template",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen:types": "bun ./scripts/generateTypes.tsx",
+    "start": "echo \"See README for how to run.\"",
+    "lint": "tsc",
+    "test": "bun run vitest"
+  },
+  "dependencies": {
+    "@typed-assistant/builder": "*",
+    "@typed-assistant/connection": "*",
+    "@typed-assistant/eslint-config": "*",
+    "@typed-assistant/logger": "*",
+    "@typed-assistant/react": "*",
+    "@typed-assistant/types": "*",
+    "@typed-assistant/typescript-config": "*",
+    "ink": "^4.4.1",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@happy-dom/global-registrator": "^12.9.1",
+    "@types/node": "^20.10.6",
+    "@types/eslint": "^8.56.1",
+    "bun-types": "^1.0.2",
+    "eslint": "^8.56.0",
+    "vitest": "^0.34.6"
+  }
+}

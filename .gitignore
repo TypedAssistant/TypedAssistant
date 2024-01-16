@@ -1,0 +1,19 @@
+/build
+node_modules
+.turbo
+
+# misc
+.DS_Store
+*.pem
+log.txt
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo

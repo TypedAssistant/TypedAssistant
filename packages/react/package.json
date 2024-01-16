@@ -1,0 +1,42 @@
+{
+  "name": "@typed-assistant/react",
+  "private": true,
+  "version": "0.0.0",
+  "exports": {
+    "./useEntity": "./src/useEntity.tsx",
+    "./WSConnection": "./src/WSConnection.tsx"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "test": "bun run vitest"
+  },
+  "dependencies": {
+    "@mdi/svg": "^7.3.67",
+    "date-fns": "^3.2.0",
+    "ignore": "^5.3.0"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.1.2",
+    "@typed-assistant/connection": "*",
+    "@typed-assistant/eslint-config": "*",
+    "@typed-assistant/logger": "*",
+    "@typed-assistant/typescript-config": "*",
+    "@typed-assistant/utils": "*",
+    "@types/node": "^20.10.6",
+    "@types/eslint": "^8.56.1",
+    "eslint": "^8.56.0",
+    "home-assistant-js-websocket": "^8.2.0",
+    "ink": "^4.4.1",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "typescript": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "peerDependencies": {
+    "@typed-assistant/connection": "*",
+    "home-assistant-js-websocket": "^8.2.0",
+    "ink": "^4.4.1",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "typed-assistant",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "dev": "turbo dev",
+    "lint": "turbo lint",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.202",
+    "use-deep-compare-effect": "^1.8.1"
+  },
+  "devDependencies": {
+    "@typed-assistant/eslint-config": "*",
+    "@typed-assistant/typescript-config": "*",
+    "prettier": "^3.1.1",
+    "turbo": "latest"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "bun@1.0.15",
+  "workspaces": [
+    "packages/*"
+  ]
+}
