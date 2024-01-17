@@ -1,8 +1,5 @@
 name: TypedAssistantBeta
-version: "0.0.3"
-ports:
-  3822/tcp: 3822
-  3823/tcp: 3823
+version: "0.0.4"
 slug: typed-assistant
 init: false
 description: Automate Home Assistant with TypeScript.
