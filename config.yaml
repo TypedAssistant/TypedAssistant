@@ -1,5 +1,5 @@
 name: TypedAssistantBeta
-version: "0.0.2"
+version: "0.0.3"
 ports:
   3822/tcp: 3822
   3823/tcp: 3823
@@ -22,12 +22,12 @@ homeassistant_api: true
 ingress: true
 boot: auto
 options:
-  commandToRun: "bun src/index.tsx"
+  commandToRun: "bun run ./src/process.tsx"
   hassToken: null
-  hassUrl: "http://192.168.86.11:8123"
-  githubToken: null
-  githubUsername: null
-  githubRepo: null
+  hassUrl: "http://192.168.86.1:8123"
+  githubToken: ""
+  githubUsername: ""
+  githubRepo: ""
   githubBranch: "main"
 schema:
   commandToRun: "str?"
