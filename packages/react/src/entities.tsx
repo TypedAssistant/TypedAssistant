@@ -27,7 +27,7 @@ export const EntitiesProvider = ({
   connection,
 }: {
   children: React.ReactNode
-  connection: HaConnection
+  connection: Parameters<typeof useEntitiesSubscription>[0]
 }) => {
   const entitiesToSubscribeRef = useRef<
     Array<[string, Array<keyof HassEntity | AnyOtherString>]>

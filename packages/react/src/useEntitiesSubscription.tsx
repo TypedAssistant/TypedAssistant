@@ -3,7 +3,7 @@ import type { HassEntities } from "home-assistant-js-websocket"
 import { useEffect, useState } from "react"
 
 export const useEntitiesSubscription = (
-  connection: HaConnection,
+  connection: Pick<HaConnection, "connection" | "getHassEntities">,
   callback: (entities: HassEntities) => void | (() => void),
 ) => {
   const [counter, setCounter] = useState(0)

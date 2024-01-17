@@ -1,7 +1,7 @@
 import type { Connection, HassEntities } from "home-assistant-js-websocket"
 import { quietLog } from "@typed-assistant/logger"
 import { createSocket } from "./socket"
-import type { RegisteredServices } from "./types"
+import type { RegisteredServices } from "@typed-assistant/types"
 
 // Normal require(), and cast to the static type
 const ha =
@@ -11,7 +11,7 @@ const ha =
 export class HaConnection {
   public connection: Connection | undefined
 
-  private configuration!: {
+  configuration: {
     token: string
     url: string
   }

@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "exports": {
     ".": "./src/index.tsx",
-    "./types": "./src/types.tsx"
+    "./notify": "./src/notify.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0"
@@ -15,6 +15,7 @@
     "@typed-assistant/eslint-config": "*",
     "@typed-assistant/logger": "*",
     "@typed-assistant/typescript-config": "*",
+    "@typed-assistant/types": "*",
     "@types/node": "^20.10.6",
     "@types/eslint": "^8.56.1",
     "eslint": "^8.56.0",

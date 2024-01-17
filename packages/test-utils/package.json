@@ -1,0 +1,22 @@
+{
+  "name": "@typed-assistant/test-utils",
+  "private": true,
+  "version": "0.0.0",
+  "exports": {
+    "./HaConnectionMock": "./src/HaConnectionMock.tsx"
+  },
+  "scripts": {
+    "lint": "eslint . --max-warnings 0",
+    "test": "bun run vitest"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@typed-assistant/types": "*",
+    "@testing-library/react": "^14.1.2",
+    "eslint": "^8.56.0",
+    "home-assistant-js-websocket": "^8.2.0"
+  },
+  "peerDependencies": {
+    "home-assistant-js-websocket": "^8.2.0"
+  }
+}

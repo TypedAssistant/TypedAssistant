@@ -3,7 +3,7 @@ import { equals } from "lodash/fp"
 import React, { useEffect, useRef } from "react"
 import type { AnyOtherString } from "@typed-assistant/utils/misc-types"
 import useDeepCompareEffect from "use-deep-compare-effect"
-import type { RegisteredEntityId } from "@typed-assistant/connection/types"
+import type { RegisteredEntityId } from "@typed-assistant/types"
 import { EntitiesSubscriptionContext } from "./entities"
 
 export function useEntity(

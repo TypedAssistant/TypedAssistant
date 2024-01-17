@@ -12,20 +12,23 @@
   "dependencies": {
     "@typed-assistant/builder": "*",
     "@typed-assistant/connection": "*",
-    "@typed-assistant/eslint-config": "*",
     "@typed-assistant/logger": "*",
     "@typed-assistant/react": "*",
     "@typed-assistant/types": "*",
-    "@typed-assistant/typescript-config": "*",
+    "@types/lodash": "^4.14.202",
     "ink": "^4.4.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0",
     "typescript": "^5.3.3"
   },
   "devDependencies": {
+    "@typed-assistant/eslint-config": "*",
+    "@typed-assistant/test-utils": "*",
+    "@typed-assistant/typescript-config": "*",
     "@happy-dom/global-registrator": "^12.9.1",
     "@types/node": "^20.10.6",
     "@types/eslint": "^8.56.1",
+    "@vitejs/plugin-react": "^4.1.1",
     "bun-types": "^1.0.2",
     "eslint": "^8.56.0",
     "vitest": "^0.34.6"

@@ -18,7 +18,7 @@ async function buildAndStartAppProcess(
   return { app: await startApp(appSourceFile) }
 }
 
-async function startApp(appSourceFile: string = "src/app.tsx") {
+async function startApp(appSourceFile: string = "src/entry.tsx") {
   log("🚀 Starting app...")
   const path = join(process.cwd(), appSourceFile)
   return Bun.spawn(["bun", path], { stdout: "inherit" })

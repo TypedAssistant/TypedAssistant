@@ -1,4 +1,28 @@
+# TODO
+
+- [ ] Remove unused eslint configs
+- [ ] Remove unused tsconfigs
+- [ ] Check for console.logs
+- [ ] Normalise file name casing
+
 # TypedAssistant
+
+## Bun ❤️
+
+We use Bun and therefore all Bun apis are available, e.g. bun:sql.
+
+## React
+
+Ink, a react renderer for the CLI, can be used to build out your home automations. This brings the benefits of React, like components and state management.
+
+### But I don't like React!
+
+TypedAssistant provides some utilities for React, but you can use as much or as little react as you wish. At the heart of things, this add-on provides a bun server that can be used to do anything, with any tooling your heart desires.
+
+## Benefits
+
+- Type-safety and autocompletions
+- Write tests for your trickier automations.
 
 ## Installation
 

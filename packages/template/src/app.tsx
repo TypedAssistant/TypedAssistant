@@ -1,12 +1,18 @@
 import { useEntity } from "@typed-assistant/react/useEntity"
-import { WSConnection } from "@typed-assistant/react/WSConnection"
-import { Box, render, Text } from "ink"
+import { notifyAndroidPhone } from "@typed-assistant/connection/notify"
+import { Box, Text } from "ink"
 import { startCase } from "lodash/fp"
-import { latestCommitId } from "./.gen/commit"
+import { useEffect } from "react"
 import { connection } from "./connection"
 
 export const App = () => {
   const sun = useEntity("sun.sun")?.state
+
+  useEffect(() => {
+    notifyAndroidPhone(connection, "mobile_app_ross_phone", {
+      message: "Testing",
+    })
+  }, [])
 
   return (
     <Box display="flex" borderStyle="single" gap={1}>
@@ -15,13 +21,3 @@ export const App = () => {
     </Box>
   )
 }
-
-render(
-  <WSConnection connection={connection} latestCommitId={latestCommitId}>
-    <App />
-  </WSConnection>,
-  {
-    // debug: true,
-    // patchConsole: false,
-  },
-)

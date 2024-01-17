@@ -5,12 +5,10 @@
     "build": "turbo build",
     "dev": "turbo dev",
     "lint": "turbo lint",
+    "test": "turbo test",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
-  "dependencies": {
-    "@types/lodash": "^4.14.202",
-    "use-deep-compare-effect": "^1.8.1"
-  },
+  "dependencies": {},
   "devDependencies": {
     "@typed-assistant/eslint-config": "*",
     "@typed-assistant/typescript-config": "*",

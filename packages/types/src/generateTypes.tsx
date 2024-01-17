@@ -53,10 +53,6 @@ async function generateEntityIdType(count = 0): Promise<void> {
   const tsFile = `
 export type EntityId =
   | ${entityIds.map((id) => `"${id}"`).join("\n  | ")}
-
-export type GetEntityIdType<TEntityType extends string> = {
-  [K in EntityId]: K extends \`$\{TEntityType}.$\{string}\` ? K : never
-}[EntityId]
   `.trimStart()
 
   const relativePath = "./src/.gen/EntityId.ts"
@@ -78,7 +74,7 @@ async function generateServicesType(count = 0): Promise<void> {
   }
 
   const tsFile = `
-import type { GetEntityIdType } from "./EntityId"
+import type { GetEntityIdType } from "@typed-assistant/types"
 export type Services = {
   ${data
     .map(
@@ -215,12 +211,14 @@ async function generateCommitFile() {
 async function generateTypeRegister() {
   const tsFile = `
   import type { EntityId } from "./EntityId"
+  import type { MDINames } from "./MDINames"
   import type { Services } from "./Services"
-  import {} from "@typed-assistant/types/type-register"
+  import {} from "@typed-assistant/types"
   
-  declare module "@typed-assistant/types/type-register" {
+  declare module "@typed-assistant/types" {
     interface Register {
       entityId: EntityId
+      mdiNames: MDINames
       services: Services
     }
   }

@@ -2,8 +2,9 @@
   "name": "@typed-assistant/types",
   "version": "0.0.0",
   "exports": {
+    ".": "./src/type-register.tsx",
     "./generateTypes": "./src/generateTypes.tsx",
-    "./type-register": "./src/type-register.tsx"
+    "./misc-types": "./src/misc-types.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0"
@@ -23,6 +24,7 @@
     "typescript": "^5.3.3"
   },
   "peerDependencies": {
+    "@typed-assistant/logger": "*",
     "home-assistant-js-websocket": "^8.2.0"
   }
 }
