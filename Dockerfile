@@ -48,8 +48,8 @@ RUN find / -name 'libstdc++.so.6'
 EXPOSE 8080
 # Run code-server in /run.sh
 
-COPY . /TypedAssistant/
-WORKDIR /TypedAssistant
+COPY . /TypedAssistantBeta/
+WORKDIR /TypedAssistantBeta
 
 RUN . /usr/local/bin/retry.sh && retry npm install -g bun
 

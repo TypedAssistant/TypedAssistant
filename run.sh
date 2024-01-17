@@ -30,26 +30,26 @@ if [[ -z "$HASS_TOKEN_TO_USE" ]]; then
     exit 1
 fi
 
-if [ ! -d "/addons/TypedAssistant" ]; then
-    mkdir -p /addons/TypedAssistant
+if [ ! -d "/addons/TypedAssistantBeta" ]; then
+    mkdir -p /addons/TypedAssistantBeta
 
     if [[ -n "$GITHUB_TOKEN_FROM_CONFIG" && -n "$GITHUB_USERNAME_FROM_CONFIG" && -n "$GITHUB_REPO_FROM_CONFIG" && -n "$GITHUB_BRANCH_FROM_CONFIG" ]]; then
-        git clone -b "$GITHUB_BRANCH_FROM_CONFIG" "https://$GITHUB_USERNAME_FROM_CONFIG:$GITHUB_TOKEN_FROM_CONFIG@github.com/$GITHUB_USERNAME_FROM_CONFIG/$GITHUB_REPO_FROM_CONFIG" /addons/TypedAssistant
+        git clone -b "$GITHUB_BRANCH_FROM_CONFIG" "https://$GITHUB_USERNAME_FROM_CONFIG:$GITHUB_TOKEN_FROM_CONFIG@github.com/$GITHUB_USERNAME_FROM_CONFIG/$GITHUB_REPO_FROM_CONFIG" /addons/TypedAssistantBeta
 
-        if [ -z "$(ls -A /addons/TypedAssistant)" ]; then
-            cp -ra /TypedAssistant/packages/template/. /addons/TypedAssistant
-            cd /addons/TypedAssistant
+        if [ -z "$(ls -A /addons/TypedAssistantBeta)" ]; then
+            cp -ra /TypedAssistantBeta/packages/template/. /addons/TypedAssistantBeta
+            cd /addons/TypedAssistantBeta
             git add .
             git commit -m "Initial commit"
             git push origin "$GITHUB_BRANCH_FROM_CONFIG"
         fi
     else
-        cp -ra /TypedAssistant/packages/template/. /addons/TypedAssistant
+        cp -ra /TypedAssistantBeta/packages/template/. /addons/TypedAssistantBeta
     fi
     
-    rm -rf /TypedAssistant
+    rm -rf /TypedAssistantBeta
 fi
-cd /addons/TypedAssistant
+cd /addons/TypedAssistantBeta
 bun install
 
 # code-server --bind-addr 0.0.0.0:3822 --auth none &
