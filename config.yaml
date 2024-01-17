@@ -1,5 +1,5 @@
 name: TypedAssistantBeta
-version: "0.0.1"
+version: "0.0.2"
 ports:
   3822/tcp: 3822
   3823/tcp: 3823
