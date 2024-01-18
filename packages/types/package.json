@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/types",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "exports": {
     ".": "./src/type-register.tsx",
     "./generateTypes": "./src/generateTypes.tsx",

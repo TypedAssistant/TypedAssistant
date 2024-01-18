@@ -4,11 +4,14 @@
   "scripts": {
     "build": "turbo build",
     "dev": "turbo dev",
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
-    "test": "turbo test",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "publish-packages": "turbo run build lint test && changeset version && changeset publish",
+    "test": "turbo test"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@changesets/cli": "^2.27.1"
+  },
   "devDependencies": {
     "@typed-assistant/eslint-config": "workspace:*",
     "@typed-assistant/typescript-config": "workspace:*",

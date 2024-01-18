@@ -1,6 +1,6 @@
+import type { AnyOtherString } from "@typed-assistant/types/misc-types"
 import cron from "node-cron"
 import { useEffect, useRef } from "react"
-import type { AnyOtherString } from "./misc-types"
 
 const buildSchedule = (
   ...times: [string | null | undefined, () => void | Promise<void>][]
@@ -109,8 +109,8 @@ type DateString = `${DayOfWeek}@${Hour}:${Minute}`
 export const useSchedule = (
   scheduleProp: [
     DateString | AnyOtherString | null | undefined,
-    () => void | Promise<void>
-  ][]
+    () => void | Promise<void>,
+  ][],
 ) => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const schedule = buildSchedule(...scheduleProp)
@@ -121,18 +121,18 @@ export const useSchedule = (
       if (!dateString) return
       const dateStringIsTime = /^[\d]{1,2}:[\d]{2}/m.test(dateString)
       const dateStringIsDayOfWeek = /^mon|tue|wed|thu|fri|sat|sun/im.test(
-        dateString
+        dateString,
       )
       const dateStringIsISO = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/m.test(
-        dateString
+        dateString,
       )
       if (dateStringIsDayOfWeek) {
-        const [dayOfWeek, time] = dateString.split("@")
+        const [dayOfWeek, time] = dateString.split("@") as [string, string]
         const [hours, minutes] = time.split(":")
         const task = cron.schedule(
           `${minutes} ${hours} * * ${dayOfWeek}`,
           action,
-          { timezone: "Europe/London" }
+          { timezone: "Europe/London" },
         )
         tasksRef.current.push(task)
       } else if (dateStringIsISO) {
@@ -147,7 +147,7 @@ export const useSchedule = (
         const task = cron.schedule(
           dateStringIsTime ? convertTimeToCron(dateString) : dateString,
           action,
-          { timezone: "Europe/London" }
+          { timezone: "Europe/London" },
         )
         tasksRef.current.push(task)
       }

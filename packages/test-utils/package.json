@@ -1,13 +1,11 @@
 {
   "name": "@typed-assistant/test-utils",
-  "private": true,
-  "version": "0.0.0",
+  "version": "0.0.1",
   "exports": {
     "./HaConnectionMock": "./src/HaConnectionMock.tsx"
   },
   "scripts": {
-    "lint": "eslint . --max-warnings 0",
-    "test": "bun run vitest"
+    "lint": "eslint . --max-warnings 0"
   },
   "dependencies": {},
   "devDependencies": {

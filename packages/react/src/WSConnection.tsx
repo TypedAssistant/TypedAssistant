@@ -1,17 +1,17 @@
-import { differenceInMilliseconds } from "date-fns"
-import type { Connection } from "home-assistant-js-websocket"
-import { Box, Text } from "ink"
-import type { ReactNode } from "react"
-import { useEffect, useState } from "react"
+import type { HaConnection } from "@typed-assistant/connection"
+import { quietLog } from "@typed-assistant/logger"
 import {
   ONE_HOUR,
   ONE_MINUTE,
   ONE_SECOND,
 } from "@typed-assistant/utils/durations"
-import { EntitiesProvider } from "./entities"
-import { quietLog } from "@typed-assistant/logger"
+import { differenceInMilliseconds } from "date-fns"
+import type { Connection } from "home-assistant-js-websocket"
+import { Box, Text } from "ink"
+import type { ReactNode } from "react"
+import { useEffect, useState } from "react"
 import { GitInfo } from "./GitInfo"
-import type { HaConnection } from "@typed-assistant/connection"
+import { EntitiesProvider } from "./entities"
 
 const startupTime = new Date()
 const SPEED = 1
@@ -114,7 +114,7 @@ export const WSConnection = ({
     return () => {
       connectionInstance?.close()
     }
-  }, [])
+  }, [connection])
 
   return (
     <>

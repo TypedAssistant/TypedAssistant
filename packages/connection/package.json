@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/connection",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "exports": {
     ".": "./src/index.tsx",
     "./notify": "./src/notify.tsx"

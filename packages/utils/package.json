@@ -1,10 +1,9 @@
 {
   "name": "@typed-assistant/utils",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "exports": {
     "./durations": "./src/durations.tsx",
-    "./getHassAPI": "./src/getHassAPI.tsx",
-    "./misc-types": "./src/misc-types.tsx"
+    "./getHassAPI": "./src/getHassAPI.tsx"
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0"

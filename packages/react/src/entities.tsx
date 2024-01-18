@@ -1,9 +1,8 @@
+import type { AnyOtherString } from "@typed-assistant/types/misc-types"
 import type { HassEntities, HassEntity } from "home-assistant-js-websocket"
 import React, { useCallback, useRef, useState } from "react"
-import type { AnyOtherString } from "@typed-assistant/utils/misc-types"
-import { useEntitiesSubscription } from "./useEntitiesSubscription"
-import type { HaConnection } from "@typed-assistant/connection"
 import { entitiesAreDifferent } from "./entitiesAreDifferent"
+import { useEntitiesSubscription } from "./useEntitiesSubscription"
 
 export type EntityId = unknown
 

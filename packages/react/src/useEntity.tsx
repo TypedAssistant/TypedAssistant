@@ -1,7 +1,7 @@
 import type { HassEntity } from "home-assistant-js-websocket"
 import { equals } from "lodash/fp"
 import React, { useEffect, useRef } from "react"
-import type { AnyOtherString } from "@typed-assistant/utils/misc-types"
+import type { AnyOtherString } from "@typed-assistant/types/misc-types"
 import useDeepCompareEffect from "use-deep-compare-effect"
 import type { RegisteredEntityId } from "@typed-assistant/types"
 import { EntitiesSubscriptionContext } from "./entities"

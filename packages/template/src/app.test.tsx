@@ -7,10 +7,9 @@ const mocks = await vi.hoisted(async () => {
   const { HaConnectionMock } = await import(
     "@typed-assistant/test-utils/HaConnectionMock"
   )
-  const connection = new HaConnectionMock()
 
   return {
-    connection,
+    connection: new HaConnectionMock(),
   }
 })
 vi.mock("./connection", () => ({ connection: mocks.connection }))
