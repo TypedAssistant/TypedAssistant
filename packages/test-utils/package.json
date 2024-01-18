@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/test-utils",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "exports": {
     "./HaConnectionMock": "./src/HaConnectionMock.tsx"
   },
@@ -16,5 +16,9 @@
   },
   "peerDependencies": {
     "home-assistant-js-websocket": "^8.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

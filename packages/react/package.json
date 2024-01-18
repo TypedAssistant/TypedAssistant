@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/react",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "exports": {
     "./entities": "./src/entities.tsx",
     "./useEntity": "./src/useEntity.tsx",
@@ -9,7 +9,7 @@
   },
   "scripts": {
     "lint": "eslint . --max-warnings 0",
-    "test": "bun run vitest"
+    "test": "bun run vitest --run"
   },
   "dependencies": {
     "@mdi/svg": "^7.3.67",
@@ -46,5 +46,9 @@
     "ink": "^4.4.1",
     "lodash": "^4.17.21",
     "react": "^18.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

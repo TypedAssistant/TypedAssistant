@@ -1,4 +1,8 @@
-# Development:
+# @type-assistant/template
+
+Template for a TypedAssistant app.
+
+## Development:
 
 Install dependencies
 ```bash
@@ -10,13 +14,13 @@ Start the watch process. The app will be restarted with src/* changes.
 bun run ./src/process.tsx
 ```
 
-# Testing:
+## Testing:
 
 ```bash
 bun run test
 ```
 
-# Deploying
+## Deploying
 
 **Prerequsite:** Add your github repo details in the add-on configuration. 
 

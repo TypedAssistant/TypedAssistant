@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/types",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "exports": {
     ".": "./src/type-register.tsx",
     "./generateTypes": "./src/generateTypes.tsx",
@@ -26,5 +26,9 @@
   "peerDependencies": {
     "@typed-assistant/logger": "workspace:*",
     "home-assistant-js-websocket": "^8.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

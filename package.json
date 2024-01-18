@@ -2,11 +2,11 @@
   "name": "typed-assistant",
   "private": true,
   "scripts": {
-    "build": "turbo build",
+    "build": "turbo build --filter=!@typed-assistant/template",
     "dev": "turbo dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "lint": "turbo lint",
-    "publish-packages": "turbo run build lint test && changeset version && changeset publish",
+    "publish-packages": "turbo run build lint test --filter=!@typed-assistant/template && changeset version && changeset publish",
     "test": "turbo test"
   },
   "dependencies": {
@@ -21,7 +21,6 @@
   "engines": {
     "node": ">=18"
   },
-  "packageManager": "bun@1.0.15",
   "workspaces": [
     "packages/*"
   ]
