@@ -13,10 +13,12 @@ import type {
 import { dirname, join } from "path"
 import { getHassAPI } from "@typed-assistant/utils/getHassAPI"
 
-export const generateTypes = async (options?: GenerateMDITypeOptions) =>
+export const generateTypes = async (
+  options?: { skipErrors?: boolean } & GenerateMDITypeOptions,
+) =>
   Promise.all([
-    generateEntityIdType(),
-    generateServicesType(),
+    generateEntityIdType({ skipErrors: !!options?.skipErrors }),
+    generateServicesType({ skipErrors: !!options?.skipErrors }),
     generateMaterialDesignIconsType({ mdiPaths: options?.mdiPaths }),
     generateCommitFile(),
     generateTypeRegister(),
@@ -38,14 +40,18 @@ type HassService = Omit<HassServiceOrig, "fields" | "target"> & {
   }
 }
 
-async function generateEntityIdType(count = 0): Promise<void> {
+async function generateEntityIdType(
+  { skipErrors }: { skipErrors: boolean },
+  count = 0,
+): Promise<void> {
   const { data, error } = await withErrorHandling(getHassAPI<HassEntity[]>)(
     `/api/states`,
   )
 
   if (error || !data) {
+    if (skipErrors) return
     return retry(count, "Could not get entities from Home Assistant", () =>
-      generateEntityIdType(count + 1),
+      generateEntityIdType({ skipErrors }, count + 1),
     )
   }
 
@@ -62,14 +68,18 @@ export type EntityId =
   })
 }
 
-async function generateServicesType(count = 0): Promise<void> {
+async function generateServicesType(
+  { skipErrors }: { skipErrors: boolean },
+  count = 0,
+): Promise<void> {
   const { data, error } = await withErrorHandling(
     getHassAPI<{ domain: string; services: { [key: string]: HassService } }[]>,
   )(`/api/services`)
 
   if (error || !data) {
+    if (skipErrors) return
     return retry(count, "Could not get services from Home Assistant", () =>
-      generateServicesType(count + 1),
+      generateServicesType({ skipErrors }, count + 1),
     )
   }
 

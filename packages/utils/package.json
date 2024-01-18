@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/utils",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "exports": {
     "./durations": "./src/durations.tsx",
     "./getHassAPI": "./src/getHassAPI.tsx"
@@ -23,5 +23,9 @@
   },
   "peerDependencies": {
     "home-assistant-js-websocket": "^8.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

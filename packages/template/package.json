@@ -1,13 +1,13 @@
 {
   "name": "@typed-assistant/template",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "type": "module",
   "scripts": {
     "gen:types": "bun ./scripts/generateTypes.tsx",
     "start": "echo \"See README for how to run.\"",
     "lint": "tsc",
-    "test": "bun run vitest"
+    "test": "bun run vitest --run"
   },
   "dependencies": {
     "@typed-assistant/builder": "workspace:*",

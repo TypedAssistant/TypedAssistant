@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/logger",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "exports": {
     ".": "./src/logger.tsx"
   },
@@ -21,5 +21,9 @@
   },
   "peerDependencies": {
     "home-assistant-js-websocket": "^8.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }

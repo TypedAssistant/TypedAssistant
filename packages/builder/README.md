@@ -1,4 +1,8 @@
-# Home Assistant Configuration
+# @type-assistant/builder
+
+Tools for running app processes and watching files.
+
+## Home Assistant Configuration
 
 This application requires two environment variables to be set: `HASS_SERVER` and `HASS_TOKEN`.
 

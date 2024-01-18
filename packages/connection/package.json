@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/connection",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "exports": {
     ".": "./src/index.tsx",
     "./notify": "./src/notify.tsx"
@@ -24,5 +24,9 @@
   },
   "peerDependencies": {
     "home-assistant-js-websocket": "^8.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   }
 }
