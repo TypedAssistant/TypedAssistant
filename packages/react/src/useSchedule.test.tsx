@@ -1,31 +1,16 @@
 import { act, render } from "@testing-library/react"
-import type { HassEntities, HassEntity } from "home-assistant-js-websocket"
+import { HaConnectionMock } from "@typed-assistant/test-utils/HaConnectionMock"
+import {
+  ONE_HOUR,
+  ONE_MINUTE,
+  ONE_SECOND,
+} from "@typed-assistant/utils/durations"
 import { expect, test, vi } from "vitest"
-import type { HaConnection } from "./HaConnection"
-import { EntitiesProvider, useEntity } from "./entities"
+import { EntitiesProvider } from "./entities"
+import { useEntity } from "./useEntity"
 import { useSchedule } from "./useSchedule"
-import { ONE_HOUR, ONE_MINUTE, ONE_SECOND } from "../durations"
 
-vi.mock("./HaConnection", () => ({ HaConnection: HaConnectionMock }))
-
-const getHassEntitiesCallbacks: ((newEntities: HassEntities) => void)[] = []
-const getHassEntitiesUnsubscribe = vi.fn(() => {})
-function HaConnectionMock() {
-  return {
-    connection: true,
-    getHassEntities: vi.fn((callback: (newEntities: HassEntities) => void) => {
-      getHassEntitiesCallbacks.push(callback)
-      return getHassEntitiesUnsubscribe
-    }),
-    tryConnect: () => {},
-  } as unknown as HaConnection
-}
-
-function updateAllCallbacks(newEntities: HassEntities) {
-  getHassEntitiesCallbacks.forEach((getHassEntitiesCallback) => {
-    act(() => getHassEntitiesCallback(newEntities))
-  })
-}
+const connection = new HaConnectionMock()
 
 test("useSchedule schedules actions at specific times", async () => {
   vi.useFakeTimers()
@@ -37,9 +22,9 @@ test("useSchedule schedules actions at specific times", async () => {
   })
 
   render(
-    <EntitiesProvider>
+    <EntitiesProvider connection={connection}>
       <TestComponent />
-    </EntitiesProvider>
+    </EntitiesProvider>,
   )
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
@@ -73,24 +58,24 @@ test("useSchedule reschedules the task when the component rerenders", async () =
   })
 
   render(
-    <EntitiesProvider>
+    <EntitiesProvider connection={connection}>
       <TestComponent />
-    </EntitiesProvider>
+    </EntitiesProvider>,
   )
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
   expect(TestComponent).toHaveBeenCalledTimes(1)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "off" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "off" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_HOUR - ONE_SECOND))
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "on" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "on" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_SECOND))
@@ -109,9 +94,9 @@ test("useSchedule schedules for the next day when time has already passed", asyn
   })
 
   render(
-    <EntitiesProvider>
+    <EntitiesProvider connection={connection}>
       <TestComponent />
-    </EntitiesProvider>
+    </EntitiesProvider>,
   )
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
@@ -141,32 +126,32 @@ test("useSchedule accepts dateTimes", async () => {
   })
 
   render(
-    <EntitiesProvider>
+    <EntitiesProvider connection={connection}>
       <TestComponent />
-    </EntitiesProvider>
+    </EntitiesProvider>,
   )
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
   expect(TestComponent).toHaveBeenCalledTimes(1)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "off" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "off" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_HOUR - 1))
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "on" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "on" },
   })
 
   act(() => vi.advanceTimersByTime(1))
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "on" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "on" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_HOUR * 24))
@@ -187,7 +172,10 @@ test("useSchedule accepts days of week", async () => {
     "5": "Friday",
     "6": "Saturday",
   } as Record<string, string>
-  console.log(days[new Date().getDay()], new Date().toLocaleTimeString())
+  expect([days[new Date().getDay()], new Date().toLocaleTimeString()]).toEqual([
+    "Friday",
+    "12:00:00 AM",
+  ])
   const onChangeCallback = vi.fn(() => {})
   const TestComponent = vi.fn(() => {
     useEntity("light.bedroom_lamp_bulb")
@@ -199,56 +187,71 @@ test("useSchedule accepts days of week", async () => {
   })
 
   render(
-    <EntitiesProvider>
+    <EntitiesProvider connection={connection}>
       <TestComponent />
-    </EntitiesProvider>
+    </EntitiesProvider>,
   )
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
   expect(TestComponent).toHaveBeenCalledTimes(1)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "off" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "off" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_HOUR * 24))
-  console.log(days[new Date().getDay()], new Date().toLocaleTimeString())
+  expect([days[new Date().getDay()], new Date().toLocaleTimeString()]).toEqual([
+    "Saturday",
+    "12:00:00 AM",
+  ])
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "on" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "on" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_HOUR * 24))
-  console.log(days[new Date().getDay()], new Date().toLocaleTimeString())
+  expect([days[new Date().getDay()], new Date().toLocaleTimeString()]).toEqual([
+    "Sunday",
+    "12:00:00 AM",
+  ])
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "on" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "on" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_HOUR * 5))
-  console.log(days[new Date().getDay()], new Date().toLocaleTimeString())
+  expect([days[new Date().getDay()], new Date().toLocaleTimeString()]).toEqual([
+    "Sunday",
+    "5:00:00 AM",
+  ])
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "on" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "on" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_MINUTE * 59))
-  console.log(days[new Date().getDay()], new Date().toLocaleTimeString())
+  expect([days[new Date().getDay()], new Date().toLocaleTimeString()]).toEqual([
+    "Sunday",
+    "5:59:00 AM",
+  ])
 
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
 
-  updateAllCallbacks({
-    "light.bedroom_lamp_bulb": { state: "on" } as HassEntity,
+  connection.setEntities({
+    "light.bedroom_lamp_bulb": { state: "on" },
   })
 
   act(() => vi.advanceTimersByTime(ONE_MINUTE * 1))
-  console.log(days[new Date().getDay()], new Date().toLocaleTimeString())
+  expect([days[new Date().getDay()], new Date().toLocaleTimeString()]).toEqual([
+    "Sunday",
+    "6:00:00 AM",
+  ])
 
   expect(onChangeCallback).toHaveBeenCalledTimes(1)
   expect(TestComponent).toHaveBeenCalledTimes(3)

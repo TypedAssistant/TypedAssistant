@@ -10,8 +10,8 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "@typed-assistant/eslint-config": "*",
-    "@typed-assistant/typescript-config": "*",
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
     "prettier": "^3.1.1",
     "turbo": "latest"
   },

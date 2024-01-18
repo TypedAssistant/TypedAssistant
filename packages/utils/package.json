@@ -14,8 +14,8 @@
     "ignore": "^5.3.0"
   },
   "devDependencies": {
-    "@typed-assistant/eslint-config": "*",
-    "@typed-assistant/typescript-config": "*",
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
     "@types/node": "^20.10.6",
     "@types/eslint": "^8.56.1",
     "eslint": "^8.56.0",

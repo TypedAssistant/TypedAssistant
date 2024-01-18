@@ -81,11 +81,11 @@ const setupGitSync = async ({
   /** Duration in seconds */
   gitPullPollDuration?: number
 } = {}) => {
-  const duration = gitPullPollDuration ?? 30
+  const duration = gitPullPollDuration ?? 5
   await pullChanges()
   log(`   ⏳ Pulling changes again in ${duration} seconds...`)
 
-  setInterval(() => {
+  setTimeout(() => {
     setupGitSync({ gitPullPollDuration })
   }, duration * ONE_SECOND)
 }

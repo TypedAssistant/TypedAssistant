@@ -4,8 +4,20 @@
 - [ ] Remove unused tsconfigs
 - [ ] Check for console.logs
 - [ ] Normalise file name casing
+- [ ] Consider package exports
+- [ ] Automate git webhooks
+- [ ] Add process monitoring/notifying
+- [ ] Add more tests
 
 # TypedAssistant
+
+An alternative to low-code automation systems like Node Red, or Home Assistant's own automation builder.
+
+## Warning
+
+This add-on is for **developers**, and people that have good knowledge of TypeScript and Bun/Node. React knowledge is required too, if you go down that route.
+
+Please file issues for bugs, and MRs are open and welcome.
 
 ## Bun ❤️
 
@@ -17,7 +29,7 @@ Ink, a react renderer for the CLI, can be used to build out your home automation
 
 ### But I don't like React!
 
-TypedAssistant provides some utilities for React, but you can use as much or as little react as you wish. At the heart of things, this add-on provides a bun server that can be used to do anything, with any tooling your heart desires.
+TypedAssistant provides some utilities for React, but you can use as much or as little react as you wish. At the heart of things, this add-on provides a bun server that can be used with any tooling your heart desires.
 
 ## Benefits
 

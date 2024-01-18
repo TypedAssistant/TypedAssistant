@@ -23,6 +23,10 @@ export class HaConnectionMock {
     })
   }
 
+  public clearHassEntitiesCallbacks = () => {
+    this.getHassEntitiesCallbacks = []
+  }
+
   public tryConnect = async () => this.connection
   public callService = async () => ({ data: "", error: undefined })
   public callApi = async () => ({ data: "", error: undefined })

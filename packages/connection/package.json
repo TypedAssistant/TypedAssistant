@@ -12,10 +12,10 @@
     "@mdi/svg": "^7.3.67"
   },
   "devDependencies": {
-    "@typed-assistant/eslint-config": "*",
-    "@typed-assistant/logger": "*",
-    "@typed-assistant/typescript-config": "*",
-    "@typed-assistant/types": "*",
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/logger": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
+    "@typed-assistant/types": "workspace:*",
     "@types/node": "^20.10.6",
     "@types/eslint": "^8.56.1",
     "eslint": "^8.56.0",

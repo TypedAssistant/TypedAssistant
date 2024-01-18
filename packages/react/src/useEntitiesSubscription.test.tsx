@@ -1,30 +1,10 @@
 import { act, render } from "@testing-library/react"
-import type { HassEntities, HassEntity } from "home-assistant-js-websocket"
+import { HaConnectionMock } from "@typed-assistant/test-utils/HaConnectionMock"
+import { useCallback } from "react"
 import { expect, test, vi } from "vitest"
-import React, { useCallback } from "react"
-import type { HaConnection } from "./HaConnection"
 import { useEntitiesSubscription } from "./useEntitiesSubscription"
 
-vi.mock("./HaConnection", () => ({ HaConnection: HaConnectionMock }))
-
-let getHassEntitiesCallbacks: ((newEntities: HassEntities) => void)[] = []
-const getHassEntitiesUnsubscribe = vi.fn(() => {})
-function HaConnectionMock() {
-  return {
-    connection: true,
-    getHassEntities: vi.fn((callback: (newEntities: HassEntities) => void) => {
-      getHassEntitiesCallbacks.push(callback)
-      return getHassEntitiesUnsubscribe
-    }),
-    tryConnect: () => {},
-  } as unknown as HaConnection
-}
-
-function updateAllCallbacks(newEntities: HassEntities) {
-  getHassEntitiesCallbacks.forEach((getHassEntitiesCallback) => {
-    act(() => getHassEntitiesCallback(newEntities))
-  })
-}
+const connection = new HaConnectionMock()
 
 test("useEntitiesSubscription calls back with updated entities", async () => {
   vi.useFakeTimers()
@@ -32,6 +12,7 @@ test("useEntitiesSubscription calls back with updated entities", async () => {
   const callback = vi.fn(() => unmountCallback)
   const TestComponent = ({ counter }: { counter: number }) => {
     useEntitiesSubscription(
+      connection,
       useCallback(
         (...args) => {
           // @ts-ignore
@@ -41,8 +22,8 @@ test("useEntitiesSubscription calls back with updated entities", async () => {
           }
         },
         // eslint-disable-next-line react-hooks/exhaustive-deps
-        [counter]
-      )
+        [counter],
+      ),
     )
     return null
   }
@@ -52,32 +33,32 @@ test("useEntitiesSubscription calls back with updated entities", async () => {
   expect(callback).not.toHaveBeenCalled()
 
   const newEntities = {
-    "switch.living_room_switch": { state: "off" } as HassEntity,
+    "switch.living_room_switch": { state: "off" },
   }
-  updateAllCallbacks(newEntities)
+  connection.setEntities(newEntities)
 
   expect(callback).toHaveBeenCalledWith(newEntities, 0)
   expect(callback).toHaveBeenCalledTimes(1)
 
   act(() => vi.advanceTimersByTime(100))
   const newEntities2 = {
-    "switch.living_room_switch": { state: "on" } as HassEntity,
+    "switch.living_room_switch": { state: "on" },
   }
-  updateAllCallbacks(newEntities2)
+  connection.setEntities(newEntities2)
 
   expect(callback).toHaveBeenCalledWith(newEntities2, 0)
   expect(callback).toHaveBeenCalledTimes(2)
 
-  getHassEntitiesCallbacks = []
+  connection.clearHassEntitiesCallbacks()
   rerender(<TestComponent counter={1} />)
 
   expect(unmountCallback).toHaveBeenCalledTimes(1)
 
   act(() => vi.advanceTimersByTime(100))
   const newEntities3 = {
-    "switch.living_room_switch": { state: "on" } as HassEntity,
+    "switch.living_room_switch": { state: "on" },
   }
-  updateAllCallbacks(newEntities3)
+  connection.setEntities(newEntities3)
 
   expect(callback).toHaveBeenCalledWith(newEntities3, 1)
   expect(callback).toHaveBeenCalledTimes(3)

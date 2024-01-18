@@ -21,11 +21,12 @@
   },
   "devDependencies": {
     "@testing-library/react": "^14.1.2",
-    "@typed-assistant/connection": "*",
-    "@typed-assistant/eslint-config": "*",
-    "@typed-assistant/logger": "*",
-    "@typed-assistant/typescript-config": "*",
-    "@typed-assistant/utils": "*",
+    "@typed-assistant/connection": "workspace:*",
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/logger": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
+    "@typed-assistant/test-utils": "workspace:*",
+    "@typed-assistant/utils": "workspace:*",
     "@types/eslint": "^8.56.1",
     "@types/lodash": "^4.14.202",
     "@types/node": "^20.10.6",
@@ -40,7 +41,8 @@
     "vitest": "^1.2.0"
   },
   "peerDependencies": {
-    "@typed-assistant/connection": "*",
+    "@typed-assistant/connection": "workspace:*",
+    "@typed-assistant/utils": "workspace:*",
     "home-assistant-js-websocket": "^8.2.0",
     "ink": "^4.4.1",
     "lodash": "^4.17.21",

@@ -10,11 +10,11 @@
     "test": "bun run vitest"
   },
   "dependencies": {
-    "@typed-assistant/builder": "*",
-    "@typed-assistant/connection": "*",
-    "@typed-assistant/logger": "*",
-    "@typed-assistant/react": "*",
-    "@typed-assistant/types": "*",
+    "@typed-assistant/builder": "workspace:*",
+    "@typed-assistant/connection": "workspace:*",
+    "@typed-assistant/logger": "workspace:*",
+    "@typed-assistant/react": "workspace:*",
+    "@typed-assistant/types": "workspace:*",
     "@types/lodash": "^4.14.202",
     "ink": "^4.4.1",
     "lodash": "^4.17.21",
@@ -22,9 +22,9 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
-    "@typed-assistant/eslint-config": "*",
-    "@typed-assistant/test-utils": "*",
-    "@typed-assistant/typescript-config": "*",
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/test-utils": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
     "@happy-dom/global-registrator": "^12.9.1",
     "@types/node": "^20.10.6",
     "@types/eslint": "^8.56.1",
