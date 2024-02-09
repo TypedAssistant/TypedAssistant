@@ -1,0 +1,25 @@
+configuration:
+  commandToRun:
+    name: Initial command to run
+    description: This will be the command that is run when the addon starts.
+  hassToken:
+    name: Home Assistant Token
+    description: Create this token in your Home Assistant profile.
+  hassUrl:
+    name: Home Assistant URL
+    description: The URL to your Home Assistant instance. e.g. http://192.168.1.10:8123
+  githubToken:
+    name: Github Token
+    description: Create this token in your Github profile.
+  githubUsername:
+    name: Github Username
+    description: Your Github username.
+  githubRepo:
+    name: Github Repo
+    description: The repo that you want to use to backup and sync your TypedAssistant app.
+  githubBranch:
+    name: Github Branch
+    description: The branch you want to use to backup and sync your TypedAssistant app.
+  additionalEnvVariables:
+    name: Additional Environment Variables
+    description: Any additional environment variables you want to set. These will be passed to your TypedAssistant app.
