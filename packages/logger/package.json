@@ -1,0 +1,29 @@
+{
+  "name": "@typed-assistant/logger",
+  "version": "0.0.21",
+  "exports": {
+    ".": "./src/logger.tsx",
+    "./levels": "./src/levels.tsx"
+  },
+  "scripts": {
+    "lint": "tsc --noEmit && eslint ."
+  },
+  "dependencies": {
+    "@mdi/svg": "^7.3.67",
+    "pino": "^8.17.2",
+    "pino-pretty": "^10.3.1"
+  },
+  "devDependencies": {
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
+    "@types/node": "^20.10.6",
+    "@types/eslint": "^8.56.1",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {},
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

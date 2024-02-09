@@ -1,0 +1,1 @@
+# @typed-assistant/eslint-config

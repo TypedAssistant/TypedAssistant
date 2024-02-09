@@ -1,0 +1,40 @@
+name: TypedAssistant
+version: "0.0.58"
+slug: typed-assistant
+init: false
+description: Automate Home Assistant with TypeScript.
+url: "https://github.com/TypedAssistant/TypedAssistant"
+arch:
+  - armhf
+  - armv7
+  - aarch64
+  - amd64
+  - i386
+map:
+  - addon_config:rw
+startup: services
+hassio_role: manager
+hassio_api: true
+homeassistant_api: true
+ingress: true
+panel_icon: "mdi:language-typescript"
+boot: auto
+environment:
+  LINES: "100"
+  COLUMNS: "100"
+options:
+  commandToRun: "bun run ./src/process.tsx"
+  githubToken: ""
+  githubUsername: ""
+  githubRepo: ""
+  githubBranch: "main"
+  additionalEnvVariables:
+    - "EXAMPLE_TOKEN=abcdefg-1234567"
+schema:
+  commandToRun: "str"
+  githubToken: "str?"
+  githubUsername: "str?"
+  githubRepo: "str?"
+  githubBranch: "str?"
+  additionalEnvVariables:
+    - "match(^.+=.+$)"
