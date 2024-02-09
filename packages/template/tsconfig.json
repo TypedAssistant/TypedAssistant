@@ -1,5 +1,0 @@
-{
-  "extends": "@typed-assistant/typescript-config/react.json",
-  "include": ["src", "scripts", "src/.gen/*.ts"],
-  "exclude": ["node_modules", "dist"],
-}

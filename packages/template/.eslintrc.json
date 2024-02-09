@@ -1,4 +1,0 @@
-{
-  "extends": ["@typed-assistant/eslint-config"],
-  "root": true
-}
