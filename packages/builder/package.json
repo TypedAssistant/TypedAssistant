@@ -1,0 +1,42 @@
+{
+  "name": "@typed-assistant/builder",
+  "version": "0.0.51",
+  "exports": {
+    "./appProcess": "./src/appProcess.tsx",
+    "./bunInstall": "./src/bunInstall.tsx",
+    "./pullChanges": "./src/pullChanges.tsx"
+  },
+  "scripts": {
+    "lint": "tsc --noEmit && eslint ."
+  },
+  "dependencies": {
+    "ansi-to-html": "^0.7.2",
+    "@elysiajs/eden": "^0.8.1",
+    "elysia": "^0.8.9",
+    "@mdi/svg": "^7.3.67",
+    "ignore": "^5.3.0",
+    "react": "^18",
+    "react-dom": "^18",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/logger": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
+    "@typed-assistant/utils": "workspace:*",
+    "@types/node": "^20.10.6",
+    "@types/eslint": "^8.56.1",
+    "eslint-plugin-html": "^7.1.0",
+    "eslint": "^8.56.0",
+    "home-assistant-js-websocket": "^8.2.0",
+    "ts-toolbelt": "^9.6.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "home-assistant-js-websocket": "^8.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

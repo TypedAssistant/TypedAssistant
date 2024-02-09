@@ -1,0 +1,36 @@
+{
+  "name": "@typed-assistant/types",
+  "version": "0.0.25",
+  "exports": {
+    ".": "./src/type-register.tsx",
+    "./generateTypes": "./src/generateTypes.tsx",
+    "./misc-types": "./src/misc-types.tsx"
+  },
+  "scripts": {
+    "lint": "tsc --noEmit && eslint ."
+  },
+  "dependencies": {
+    "@mdi/svg": "^7.3.67",
+    "ignore": "^5.3.0"
+  },
+  "devDependencies": {
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/logger": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
+    "@typed-assistant/utils": "workspace:*",
+    "@types/node": "^20.10.6",
+    "@types/eslint": "^8.56.1",
+    "eslint": "^8.56.0",
+    "home-assistant-js-websocket": "^8.2.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "@typed-assistant/logger": "workspace:*",
+    "home-assistant-js-websocket": "^8.2.0",
+    "@typed-assistant/utils": "workspace:*"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

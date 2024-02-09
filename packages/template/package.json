@@ -1,0 +1,40 @@
+{
+  "name": "@typed-assistant/template",
+  "version": "0.0.59",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "gen:types": "bun ./scripts/generateTypes.tsx",
+    "start": "echo \"See README for how to run.\"",
+    "lint": "tsc --noEmit && eslint .",
+    "test": "bun run vitest --run"
+  },
+  "dependencies": {
+    "@typed-assistant/builder": "workspace:*",
+    "@typed-assistant/connection": "workspace:*",
+    "@typed-assistant/logger": "workspace:*",
+    "@typed-assistant/react": "workspace:*",
+    "@typed-assistant/types": "workspace:*",
+    "@typed-assistant/utils": "workspace:*",
+    "@types/lodash": "^4.14.202",
+    "debounce": "^2.0.0",
+    "ink": "^4.4.1",
+    "lodash": "^4.17.21",
+    "react": "^18.2.0",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5.3.3"
+  },
+  "devDependencies": {
+    "@testing-library/react": "^14.1.2",
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/test-utils": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
+    "@happy-dom/global-registrator": "^12.9.1",
+    "@types/node": "^20.10.6",
+    "@types/eslint": "^8.56.1",
+    "@vitejs/plugin-react": "^4.1.1",
+    "bun-types": "^1.0.2",
+    "eslint": "^8.56.0",
+    "vitest": "^1.2.0"
+  }
+}

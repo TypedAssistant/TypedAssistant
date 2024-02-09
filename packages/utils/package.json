@@ -1,0 +1,33 @@
+{
+  "name": "@typed-assistant/utils",
+  "version": "0.0.14",
+  "exports": {
+    "./durations": "./src/durations.tsx",
+    "./getHassAPI": "./src/getHassAPI.tsx",
+    "./getPrettyTimestamp": "./src/getPrettyTimestamp.tsx",
+    "./withErrorHandling": "./src/withErrorHandling.tsx"
+  },
+  "scripts": {
+    "lint": "tsc --noEmit && eslint ."
+  },
+  "dependencies": {
+    "@mdi/svg": "^7.3.67",
+    "ignore": "^5.3.0"
+  },
+  "devDependencies": {
+    "@typed-assistant/eslint-config": "workspace:*",
+    "@typed-assistant/typescript-config": "workspace:*",
+    "@types/node": "^20.10.6",
+    "@types/eslint": "^8.56.1",
+    "eslint": "^8.56.0",
+    "home-assistant-js-websocket": "^8.2.0",
+    "typescript": "^5.3.3"
+  },
+  "peerDependencies": {
+    "home-assistant-js-websocket": "^8.2.0"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  }
+}

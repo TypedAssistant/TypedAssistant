@@ -1,0 +1,10 @@
+{
+  "extends": "@typed-assistant/typescript-config/react.json",
+  "compilerOptions": {
+    "paths": {
+      "@elysiajs/eden": ["./node_modules/@elysiajs/eden/"],
+    },
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"],
+}
