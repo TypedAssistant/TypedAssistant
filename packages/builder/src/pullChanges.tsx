@@ -2,7 +2,11 @@ import { logger } from "@typed-assistant/logger"
 import { $ } from "bun"
 import { bunInstall } from "./bunInstall"
 
-export const pullChanges = async () => {
+export const pullChanges = async ({
+  onChangesPulled,
+}: {
+  onChangesPulled: () => void
+}) => {
   logger.debug({ emoji: "⬇️" }, "Pulling changes...")
   const { exitCode, stderr, stdout } = await $`git pull`.quiet()
   if (exitCode) {
@@ -19,11 +23,12 @@ export const pullChanges = async () => {
     logger.debug({ emoji: "⬇️👌" }, "No new changes.")
     return {}
   } else {
+    if (packageJSONUpdated) {
+      logger.info({ emoji: "⬇️📦" }, "package.json updated.")
+      await bunInstall()
+    }
     logger.info({ emoji: "⬇️🆕" }, "Changes pulled.")
-  }
-  if (packageJSONUpdated) {
-    logger.info({ emoji: "⬇️📦" }, "package.json updated.")
-    await bunInstall()
+    onChangesPulled()
   }
   return {}
 }

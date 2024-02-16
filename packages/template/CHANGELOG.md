@@ -1,5 +1,14 @@
 # @typed-assistant/template
 
+## 0.0.81
+
+### Patch Changes
+
+- Refactor useEntity.
+- Updated dependencies
+  - @typed-assistant/connection@0.0.25
+  - @typed-assistant/react@0.0.35
+
 ## 0.0.2
 
 ### Patch Changes

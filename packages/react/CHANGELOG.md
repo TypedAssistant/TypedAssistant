@@ -1,5 +1,13 @@
 # @typed-assistant/react
 
+## 0.0.35
+
+### Patch Changes
+
+- Refactor useEntity.
+- Updated dependencies
+  - @typed-assistant/connection@0.0.25
+
 ## 0.0.2
 
 ### Patch Changes

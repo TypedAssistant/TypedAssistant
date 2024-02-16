@@ -1,12 +1,11 @@
 {
   "name": "@typed-assistant/react",
-  "version": "0.0.34",
+  "version": "0.0.41",
   "exports": {
-    "./entities": "./src/entities.tsx",
+    "./Status": "./src/Status.tsx",
     "./useEntity": "./src/useEntity.tsx",
     "./useOnEntityStateChange": "./src/useOnEntityStateChange.tsx",
-    "./useSchedule": "./src/useSchedule.tsx",
-    "./WSConnection": "./src/WSConnection.tsx"
+    "./useSchedule": "./src/useSchedule.tsx"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint .",

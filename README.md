@@ -1,15 +1,3 @@
-# TODO
-
-- [ ] Get exoplanet running
-- [ ] Add more tests
-- [ ] Check for vscode add-on and add link to it
-- [ ] Call API through websocket when available
-- [ ] Take screenshots
-- [ ] Remove stuff about webhooks
-- [ ] Update changelogs
-- [ ] Update READMEs
-- [ ] Do more in github actions
-
 # TypedAssistant
 
 An alternative to low-code automation systems like Node Red, or Home Assistant's own automation builder.
@@ -24,9 +12,7 @@ An alternative to low-code automation systems like Node Red, or Home Assistant's
 
 ## Warning
 
-This add-on is for **developers**, and people that have good knowledge of TypeScript and Bun/Node. React knowledge is required too, if you go down that route.
-
-Please file issues for bugs, and MRs are open and welcome.
+This add-on is for people that have good knowledge of TypeScript and Bun/Node. React knowledge is required too, if you go down that route.
 
 ## Bun ❤️
 
@@ -98,13 +84,9 @@ To enable syncing with a GitHub repository, you can provide the following enviro
 
 Please note that the repository should be initially empty unless you have already been through the setup process. When the add-on is first run, it will initialize the repository with template code. If the repository has been initialized before, the add-on will use those existing files, keeping everything in sync.
 
-### GitHub webhooks
-
-By default, the add-on will poll the provided GitHub repo for changes every 30 seconds (configurable in process.tsx). However, we can instead provide an external URL (e.g. the Nabu Casa remote access URL) in the add-on configuration page. When provided, the add-on will automatically setup a webhook for the given repo, so that when you push changes to it, they will be pulled and loaded automatically.
-
 ## SSHing into docker
 
-- We can use the [SSH & Web Tunnel](/https://community.home-assistant.io/t/home-assistant-community-add-on-ssh-web-terminal/33820) to find our docker container and ssh into it
+- We can use the [SSH & Web Tunnel](https://community.home-assistant.io/t/home-assistant-community-add-on-ssh-web-terminal/33820) to find our docker container and ssh into it
   - Once installed, open the Terminal add-on and run `docker ps | grep TypedAssistant`. Hopefully an entry should appear. If not, make sure the TypedAssistant add-on is installed and running.
   - Run `docker exec -it <docker id from previous command> /bin/bash`. You should now be inside the docker container.
 
@@ -113,3 +95,11 @@ By default, the add-on will poll the provided GitHub repo for changes every 30 s
 You can change these in the add-on configuration.
 
 `LOCALE`: Used for logging dates. Default is "en-GB".
+
+# TODO
+
+- [ ] Check for vscode add-on and add link to it in addon UI
+- [ ] Take screenshots
+- [ ] Update changelogs
+- [ ] Update READMEs
+- [ ] Do more in github actions

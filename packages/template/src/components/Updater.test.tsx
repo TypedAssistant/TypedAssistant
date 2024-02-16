@@ -1,13 +1,10 @@
 import { render } from "@testing-library/react"
-import { EntitiesProvider } from "@typed-assistant/react/entities"
+import { callService } from "@typed-assistant/utils/callService"
 import { ONE_HOUR, ONE_MINUTE } from "@typed-assistant/utils/durations"
 import { expect, test, vi } from "vitest"
 import { Updater } from "./Updater"
-import { callService } from "@typed-assistant/utils/callService"
-import { HaConnectionMock } from "@typed-assistant/test-utils/HaConnectionMock"
 
 vi.mock("@typed-assistant/utils/callService", () => ({ callService: vi.fn() }))
-const connection = new HaConnectionMock()
 
 const days: Record<string, string> = {
   "0": "Sunday",
@@ -24,11 +21,7 @@ test("runs the HA core update Saturday at 05:00", async () => {
   vi.useFakeTimers()
   vi.setSystemTime(startDate)
 
-  render(
-    <EntitiesProvider connection={connection}>
-      <Updater />
-    </EntitiesProvider>,
-  )
+  render(<Updater />)
 
   // Currently Friday @ 05:00
   expect(days[new Date().getDay()]).toBe("Friday")
@@ -56,11 +49,7 @@ test("runs the HA OS update Saturday at 05:30", async () => {
   vi.useFakeTimers()
   vi.setSystemTime(startDate)
 
-  render(
-    <EntitiesProvider connection={connection}>
-      <Updater />
-    </EntitiesProvider>,
-  )
+  render(<Updater />)
 
   // Currently Saturday @ 05:29
   expect(days[new Date().getDay()]).toBe("Saturday")
@@ -82,11 +71,7 @@ test("runs the HA OS supervisor Saturday at 06:30", async () => {
   vi.useFakeTimers()
   vi.setSystemTime(startDate)
 
-  render(
-    <EntitiesProvider connection={connection}>
-      <Updater />
-    </EntitiesProvider>,
-  )
+  render(<Updater />)
 
   // Currently Saturday @ 06:29
   expect(days[new Date().getDay()]).toBe("Saturday")

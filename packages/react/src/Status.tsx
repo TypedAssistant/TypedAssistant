@@ -8,10 +8,8 @@ import { quietLogger } from "@typed-assistant/logger"
 import { differenceInMilliseconds } from "date-fns"
 import type { Connection } from "home-assistant-js-websocket"
 import { Box, Text } from "ink"
-import type { ReactNode } from "react"
 import { useEffect, useState } from "react"
 import { GitInfo } from "./GitInfo"
-import { EntitiesProvider } from "./entities"
 
 const startupTime = new Date()
 const SPEED = 1
@@ -115,10 +113,11 @@ export const Status = ({
 
   return (
     <>
-      <Box gap={0}>
+      <Box gap={0} display="flex" flexDirection="row">
         <Box
           display="flex"
           flexDirection="column"
+          flexGrow={1}
           alignItems="center"
           gap={1}
           paddingX={1}
@@ -133,21 +132,21 @@ export const Status = ({
           ) : null}
         </Box>
         <Uptime />
+        <Box
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          paddingX={1}
+          borderStyle="single"
+        >
+          <Text>PID: {process.pid}</Text>
+        </Box>
         <GitInfo latestCommitId={latestCommitId} />
       </Box>
     </>
   )
 }
 
-export const WSConnection = ({
-  children,
-  connection,
-}: {
-  children?: ReactNode
-  connection: HaConnection
-}) => {
-  return <EntitiesProvider connection={connection}>{children}</EntitiesProvider>
-}
 const connectionStateColourMap = {
   connecting: "yellow",
   connected: "green",

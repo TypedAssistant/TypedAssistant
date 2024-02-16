@@ -4,18 +4,20 @@ import { pullChanges } from "./pullChanges"
 
 export const setupGitPoller = async ({
   gitPullPollDuration,
+  onChangesPulled,
 }: {
   /** Duration in seconds */
   gitPullPollDuration?: number
-} = {}) => {
+  onChangesPulled: () => void
+}) => {
   const duration = gitPullPollDuration ?? 30
-  await pullChanges()
+  await pullChanges({ onChangesPulled })
   logger.debug(
     { emoji: "⬇️⏳" },
     `Pulling changes again in ${duration} seconds...`,
   )
 
   setTimeout(() => {
-    setupGitPoller({ gitPullPollDuration })
+    setupGitPoller({ gitPullPollDuration, onChangesPulled })
   }, duration * ONE_SECOND)
 }

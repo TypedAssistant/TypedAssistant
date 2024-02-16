@@ -1,5 +1,11 @@
 # @typed-assistant/connection
 
+## 0.0.25
+
+### Patch Changes
+
+- Refactor useEntity.
+
 ## 0.0.2
 
 ### Patch Changes

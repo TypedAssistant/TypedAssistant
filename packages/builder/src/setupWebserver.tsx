@@ -227,7 +227,6 @@ export const startWebappServer = async ({
       }),
 
       async open(ws) {
-        console.log("😅😅😅 ~ ws.data.query:", ws.data.query)
         ws.send(
           await getLogsFromFile({
             level: ws.data.query.level,

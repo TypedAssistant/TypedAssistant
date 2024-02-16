@@ -1,11 +1,22 @@
 import { $ } from "bun"
 
+$.throws(true)
+
 const upgradeBun = async () => {
   const { exitCode, stderr } = await $`bun upgrade`
 
   if (exitCode) {
     console.error(`Failed to upgrade bun: ${stderr.toString().trim()}`)
     throw new Error("Failed to upgrade bun")
+  }
+}
+
+const removeDeps = async () => {
+  const { exitCode, stderr } = await $`rm -rf node_modules`
+
+  if (exitCode) {
+    console.error(`Failed to remove dependencies: ${stderr.toString().trim()}`)
+    throw new Error("Failed to remove dependencies")
   }
 }
 
@@ -37,4 +48,5 @@ const withRetries = async (
 }
 
 await withRetries(upgradeBun, 10)
+await withRetries(removeDeps, 10)
 await withRetries(installDeps, 10)

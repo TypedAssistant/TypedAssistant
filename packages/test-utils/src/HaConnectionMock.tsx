@@ -15,6 +15,12 @@ export class HaConnectionMock {
     return () => {}
   }
 
+  public clearEntities = () => {
+    this.getHassEntitiesCallbacks.forEach((getHassEntitiesCallback) => {
+      act(() => getHassEntitiesCallback({} as HassEntities))
+    })
+  }
+
   public setEntities = <T extends EntityId>(newEntities: {
     [key in T]: Partial<HassEntities[T]>
   }) => {

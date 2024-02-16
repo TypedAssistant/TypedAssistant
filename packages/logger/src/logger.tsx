@@ -44,45 +44,51 @@ const loggerPino = pino(
 export const logger = {
   trace: (mergeObject: MergeObject | string, message?: string) =>
     loggerPino.trace(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   debug: (mergeObject: MergeObject | string, message?: string) =>
     loggerPino.debug(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   info: (mergeObject: MergeObject | string, message?: string) =>
     loggerPino.info(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   warn: (mergeObject: MergeObject | string, message?: string) =>
     loggerPino.warn(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   error: (mergeObject: MergeObject | string, message?: string) =>
     loggerPino.error(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   fatal: (mergeObject: MergeObject | string, message?: string) =>
     loggerPino.fatal(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
 }
 
@@ -105,44 +111,50 @@ const quietLoggerPino = pino(
 export const quietLogger = {
   trace: (mergeObject: MergeObject | string, message?: string) =>
     quietLoggerPino.trace(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   debug: (mergeObject: MergeObject | string, message?: string) =>
     quietLoggerPino.debug(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   info: (mergeObject: MergeObject | string, message?: string) =>
     quietLoggerPino.info(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   warn: (mergeObject: MergeObject | string, message?: string) =>
     quietLoggerPino.warn(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   error: (mergeObject: MergeObject | string, message?: string) =>
     quietLoggerPino.error(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
   fatal: (mergeObject: MergeObject | string, message?: string) =>
     quietLoggerPino.fatal(
-      typeof mergeObject === "string"
-        ? mergeObject
-        : { ...mergeObject, id: crypto.randomUUID() },
-      message,
+      {
+        ...(typeof mergeObject === "string" ? {} : mergeObject),
+        id: crypto.randomUUID(),
+      },
+      typeof mergeObject === "string" ? mergeObject : message,
     ),
 }

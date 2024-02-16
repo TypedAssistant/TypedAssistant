@@ -6,5 +6,6 @@ export default defineConfig({
   test: {
     clearMocks: true,
     environment: "happy-dom",
+    globals: true,
   },
 })

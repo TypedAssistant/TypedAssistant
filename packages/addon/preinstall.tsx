@@ -1,4 +1,4 @@
-import fs from "fs"
+import { readFileSync, writeFileSync } from "fs"
 
 const packageJsonPath = process.argv[2]
 if (typeof packageJsonPath !== "string") {
@@ -7,7 +7,7 @@ if (typeof packageJsonPath !== "string") {
 }
 
 // Read the package.json file
-const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, "utf8"))
+const packageJson = JSON.parse(readFileSync(packageJsonPath, "utf8"))
 
 // Get the list of packages with "workspace:*" versions from dependencies and devDependencies
 const packagesToUpdate = [
@@ -45,7 +45,7 @@ Promise.all(
 )
   .then(() => {
     const newFile = `${JSON.stringify(packageJson, null, 2)}\n`
-    fs.writeFileSync(packageJsonPath, newFile)
+    writeFileSync(packageJsonPath, newFile)
   })
   .catch((error) => {
     console.error("Failed to update package.json:", error)

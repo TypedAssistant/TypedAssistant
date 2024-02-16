@@ -19,7 +19,16 @@ export class HaConnection {
   public pendingConnection: Promise<Connection> | undefined
   public connection: Connection | undefined
 
-  constructor() {
+  constructor() {}
+
+  public getConnection = async () => {
+    if (this.connection !== undefined) {
+      return this.connection
+    }
+    if (this.connection === undefined && this.pendingConnection !== undefined) {
+      return this.pendingConnection
+    }
+
     const auth = new ha.Auth({
       access_token: configuration.token,
       expires: +new Date(new Date().getTime() + 1e11),
@@ -34,22 +43,13 @@ export class HaConnection {
         auth,
         createSocket: async () => createSocket(auth),
       })
-      this.pendingConnection.then((conn) => {
+      await this.pendingConnection.then((conn) => {
         this.connection = conn
         this.pendingConnection = undefined
       })
     } catch (error) {
       this.handleConnectionError(error)
       throw error
-    }
-  }
-
-  public getConnection = async () => {
-    if (this.connection !== undefined) {
-      return this.connection
-    }
-    if (this.connection === undefined && this.pendingConnection !== undefined) {
-      return this.pendingConnection
     }
 
     return this.connection
@@ -77,8 +77,13 @@ export class HaConnection {
     console.error("❌", errorText)
   }
 
-  public getHassEntities = (callback: (entities: HassEntities) => void) => {
-    if (!this.connection) throw new Error("No connection")
+  public getHassEntities = async (
+    callback: (entities: HassEntities) => void,
+  ) => {
+    if (!this.connection) {
+      await this.getConnection()
+      if (!this.connection) return
+    }
     return ha.subscribeEntities(this.connection, (entities) => {
       callback(entities)
     })

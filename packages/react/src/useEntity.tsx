@@ -1,10 +1,12 @@
-import type { HassEntity } from "home-assistant-js-websocket"
-import { equals } from "lodash/fp"
-import React, { useEffect, useRef } from "react"
-import type { AnyOtherString } from "@typed-assistant/types/misc-types"
-import useDeepCompareEffect from "use-deep-compare-effect"
+import {
+  addListener,
+  getEntities,
+} from "@typed-assistant/connection/entityStore"
 import type { EntityId } from "@typed-assistant/types"
-import { EntitiesSubscriptionContext } from "./entities"
+import type { AnyOtherString } from "@typed-assistant/types/misc-types"
+import type { HassEntity } from "home-assistant-js-websocket"
+import { useCallback, useRef, useSyncExternalStore } from "react"
+import { entitiesAreDifferent } from "./entitiesAreDifferent"
 
 export function useEntity(
   entityId: EntityId,
@@ -18,40 +20,38 @@ export function useEntity(
   entityId: EntityId | EntityId[],
   deps: Array<keyof HassEntity | AnyOtherString> = ["state"],
 ): HassEntity | undefined | (HassEntity | undefined)[] {
-  const [entities, setEntitiesToSubscribe] = React.useContext(
-    EntitiesSubscriptionContext,
-  )
   const entityIds = Array.isArray(entityId) ? entityId : [entityId]
+  const resultRef = useRef<(HassEntity | undefined)[]>(
+    entityIds.map((entityId) => getEntities()[entityId]),
+  )
+  const entityIdsRef = useRef(entityIds)
+  entityIdsRef.current = entityIds
 
-  useDeepCompareEffect(() => {
-    entityIds.forEach((id) => {
-      setEntitiesToSubscribe((prev) => [...prev, [id, deps]])
-    })
-    return () => {
-      entityIds.forEach((id) => {
-        setEntitiesToSubscribe((prev) =>
-          prev.filter(([id2, deps2]) => !(id2 === id && equals(deps, deps2))),
+  const subscribeFn = useCallback(
+    (callback: () => void) => {
+      return addListener((entities, prevEntities) => {
+        if (
+          entityIdsRef.current.some((entityId) =>
+            entitiesAreDifferent(
+              deps,
+              entities[entityId],
+              prevEntities[entityId],
+            ),
+          )
         )
+          resultRef.current = entityIdsRef.current.map(
+            (entityId) => entities[entityId],
+          )
+        callback()
       })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [entityIds, setEntitiesToSubscribe])
+    },
+    [deps, entityIdsRef],
+  )
+
+  const entities = useSyncExternalStore(subscribeFn, () => resultRef.current)
 
   if (Array.isArray(entityId)) {
-    return entityId.map((id) => entities[id])
+    return Array.isArray(entities) ? entities : [entities]
   }
-
-  return entities[entityId as string]
-}
-
-export const useEntityRef = (
-  entityId: EntityId,
-  deps?: Array<keyof HassEntity>,
-) => {
-  const entity = useEntity(entityId, deps)
-  const entityRef = useRef(entity)
-  useEffect(() => {
-    entityRef.current = entity
-  }, [entity])
-  return entityRef
+  return entities?.[0]
 }

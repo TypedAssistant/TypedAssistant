@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/template",
-  "version": "0.0.80",
+  "version": "0.0.89",
   "private": true,
   "type": "module",
   "scripts": {
@@ -26,13 +26,14 @@
     "typescript": "^5.3.3"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^12.9.1",
     "@testing-library/react": "^14.1.2",
     "@typed-assistant/eslint-config": "workspace:*",
     "@typed-assistant/test-utils": "workspace:*",
     "@typed-assistant/typescript-config": "workspace:*",
     "@typescript-eslint/eslint-plugin": "^6.17.0",
-    "@happy-dom/global-registrator": "^12.9.1",
     "@types/node": "^20.10.6",
+    "@types/node-cron": "^3.0.11",
     "@types/eslint": "^8.56.1",
     "@vitejs/plugin-react": "^4.1.1",
     "bun-types": "^1.0.2",

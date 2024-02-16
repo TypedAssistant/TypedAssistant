@@ -6,12 +6,14 @@
     "ci:publish": "pnpm publish -r --no-git-checks",
     "dev": "turbo dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "gen:types": "turbo gen:types",
     "lint": "turbo lint",
     "publish-packages": "turbo run build lint test --filter=!@typed-assistant/template && changeset version && changeset publish",
     "test": "turbo test"
   },
   "dependencies": {
-    "@changesets/cli": "^2.27.1"
+    "@changesets/cli": "^2.27.1",
+    "typescript": "^5.4.2"
   },
   "devDependencies": {
     "@typed-assistant/eslint-config": "workspace:*",

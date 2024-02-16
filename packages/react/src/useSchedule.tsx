@@ -117,8 +117,11 @@ export const useSchedule = (
   const tasksRef = useRef<{ stop: () => void }[]>([])
 
   useEffect(() => {
-    Object.entries(schedule).forEach(([dateString, action]) => {
+    Object.entries(schedule).forEach(([dateString, actionOrig]) => {
       if (!dateString) return
+      const action = () => {
+        actionOrig()
+      }
       const dateStringIsTime = /^[\d]{1,2}:[\d]{2}/m.test(dateString)
       const dateStringIsDayOfWeek = /^mon|tue|wed|thu|fri|sat|sun/im.test(
         dateString,
@@ -163,15 +166,14 @@ export const useSchedule = (
 }
 
 /**
- # second (optional)
- # │ minute
- # │ │ hour
- # │ │ │ day of month
- # │ │ │ │ month
- # │ │ │ │ │ day of week
- # │ │ │ │ │ │
- # │ │ │ │ │ │
- # * * * * * *
+#### second (optional)
+#### │ minute
+#### │ │ hour
+#### │ │ │ day of month
+#### │ │ │ │ month
+#### │ │ │ │ │ day of week
+#### │ │ │ │ │ │
+#### * * * * * *
  */
 const convertTimeToCron = (dateString: string) => {
   const [hours, minutes] = dateString.split(":").map(Number)

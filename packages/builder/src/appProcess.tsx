@@ -74,7 +74,15 @@ export async function setup({
       )
     },
   })
-  await setupGitSync()
+  await setupGitSync({
+    onChangesPulled: async () => {
+      subprocesses = await killAndRestartApp(
+        entryFile,
+        { mdiPaths },
+        subprocesses,
+      )
+    },
+  })
 
   return subprocesses
 }
@@ -92,9 +100,9 @@ async function buildAndStartAppProcess(
 async function startApp(appSourceFile: string) {
   logger.info({ emoji: "🚀" }, "Starting app...")
   const path = join(process.cwd(), appSourceFile)
-  return Bun.spawn(["bun", path], {
+  return Bun.spawn(["bun", "--bun", path], {
     stderr: "pipe",
-    env: { ...process.env, FORCE_COLOR: "1" },
+    env: { ...process.env, FORCE_COLOR: "1", NODE_ENV: "production" },
   })
 }
 
@@ -164,7 +172,11 @@ const getAddonInfo = async () => {
   return data
 }
 
-const setupGitSync = async () => {
+const setupGitSync = async ({
+  onChangesPulled,
+}: {
+  onChangesPulled: () => void
+}) => {
   if (
     !process.env.GITHUB_TOKEN ||
     !process.env.GITHUB_USERNAME ||
@@ -178,7 +190,7 @@ const setupGitSync = async () => {
   }
 
   logger.warn({ emoji: "⬇️" }, "Setting up git poller...")
-  await setupGitPoller()
+  await setupGitPoller({ onChangesPulled })
 }
 
 const ig = ignore().add(
