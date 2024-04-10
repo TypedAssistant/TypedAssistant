@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@typescript-eslint/parser": "^6.17.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.0"
   },
   "publishConfig": {
     "access": "public",

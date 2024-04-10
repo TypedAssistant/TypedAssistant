@@ -19,7 +19,7 @@
     "@types/eslint": "^8.56.1",
     "eslint": "^8.56.0",
     "home-assistant-js-websocket": "^8.2.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.4.0"
   },
   "peerDependencies": {
     "home-assistant-js-websocket": "^8.2.0"

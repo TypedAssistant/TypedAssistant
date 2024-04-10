@@ -1,5 +1,10 @@
 {
   "extends": "@typed-assistant/typescript-config/react.json",
-  "include": ["src", "scripts", "src/.gen/*.ts"],
+  "include": ["src", "scripts", "src/.gen/*.ts", "./*.tsx"],
   "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "target": "ESNext"
+  }
 }

@@ -8,7 +8,7 @@ export const pullChanges = async ({
   onChangesPulled: () => void
 }) => {
   logger.debug({ emoji: "⬇️" }, "Pulling changes...")
-  const { exitCode, stderr, stdout } = await $`git pull`.quiet()
+  const { exitCode, stderr, stdout } = await $`git pull`.nothrow().quiet()
   if (exitCode) {
     logger.error(
       { additionalDetails: stderr.toString().trim(), emoji: "⬇️🚨" },
