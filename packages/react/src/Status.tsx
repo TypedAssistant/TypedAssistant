@@ -1,15 +1,15 @@
 import type { HaConnection } from "@typed-assistant/connection"
+import { quietLogger } from "@typed-assistant/logger"
 import {
   ONE_HOUR,
   ONE_MINUTE,
   ONE_SECOND,
 } from "@typed-assistant/utils/durations"
-import { quietLogger } from "@typed-assistant/logger"
 import { differenceInMilliseconds } from "date-fns"
-import type { Connection } from "home-assistant-js-websocket"
 import { Box, Text } from "ink"
 import { useEffect, useState } from "react"
 import { GitInfo } from "./GitInfo"
+import { useConnectionStatus } from "./useConnectionStatus"
 
 const startupTime = new Date()
 const SPEED = 1
@@ -64,52 +64,11 @@ export const Status = ({
   connection: HaConnection
   latestCommitId?: string
 }) => {
-  const [state, setState] = useState<{
-    error?: string
-    state: "idle" | "connecting" | "connected" | "disconnected" | "errored"
-  }>({ state: "idle" })
+  const state = useConnectionStatus(connection)
 
   useEffect(() => {
     quietLogger.info({ emoji: "🧦" }, `WSConnection: ${state.state}`)
   }, [state.state])
-
-  useEffect(() => {
-    let connectionInstance: Connection | undefined
-    const go = async () => {
-      setState({ state: "connecting" })
-      try {
-        connectionInstance = await connection.getConnection()
-      } catch (error) {
-        setState({
-          error: (error as Error).message ?? "Unknown error",
-          state: "errored",
-        })
-        return
-      }
-      if (!connectionInstance) {
-        setState({ state: "errored", error: "No connection" })
-        return
-      }
-      setState({ state: "connected" })
-
-      connectionInstance?.addEventListener("ready", () => {
-        setState({ state: "connected" })
-      })
-
-      connectionInstance?.addEventListener("disconnected", () => {
-        setState({ state: "disconnected" })
-      })
-
-      connectionInstance?.addEventListener("reconnect-error", () => {
-        setState({ state: "errored", error: "Reconnect error" })
-      })
-    }
-
-    go()
-    return () => {
-      connectionInstance?.close()
-    }
-  }, [connection])
 
   return (
     <>

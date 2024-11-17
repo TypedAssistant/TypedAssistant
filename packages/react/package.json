@@ -1,8 +1,9 @@
 {
   "name": "@typed-assistant/react",
-  "version": "0.0.41",
+  "version": "0.0.42",
   "exports": {
     "./Status": "./src/Status.tsx",
+    "./useConnectionStatus": "./src/useConnectionStatus.tsx",
     "./useEntity": "./src/useEntity.tsx",
     "./useOnEntityStateChange": "./src/useOnEntityStateChange.tsx",
     "./useSchedule": "./src/useSchedule.tsx"
