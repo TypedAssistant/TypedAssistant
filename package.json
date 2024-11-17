@@ -12,14 +12,14 @@
     "test": "turbo test"
   },
   "dependencies": {
-    "@changesets/cli": "^2.27.1",
-    "typescript": "^5.4.2"
+    "@changesets/cli": "^2.27.9",
+    "typescript": "^5.6.3"
   },
   "devDependencies": {
     "@typed-assistant/eslint-config": "workspace:*",
     "@typed-assistant/typescript-config": "workspace:*",
-    "prettier": "^3.1.1",
-    "turbo": "latest"
+    "prettier": "^3.3.3",
+    "turbo": "1.13.4"
   },
   "engines": {
     "node": ">=18"

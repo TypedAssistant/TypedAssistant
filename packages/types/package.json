@@ -15,8 +15,9 @@
   "devDependencies": {
     "@typed-assistant/eslint-config": "workspace:*",
     "@typed-assistant/typescript-config": "workspace:*",
-    "@types/node": "^20.10.6",
     "@types/eslint": "^8.56.1",
+    "@types/node": "^20.10.6",
+    "bun-types": "^1.0.2",
     "eslint": "^8.56.0",
     "home-assistant-js-websocket": "^8.2.0",
     "typescript": "^5.4.0"
