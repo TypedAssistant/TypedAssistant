@@ -16,14 +16,18 @@ export const getLogStore = ({
   level,
   limit,
   offset,
+  filter,
 }: {
   level: keyof typeof levels
   limit: string
   offset: string
+  filter: string
 }) => ({
   subscribe: (listener: () => void) => {
     listeners = [...listeners, listener]
-    const ws = app.logsws.subscribe({ $query: { level, limit, offset } })
+    const ws = app.logsws.subscribe({
+      $query: { level, limit, offset, filter },
+    })
     logStore = {
       logs: [],
       ws,
@@ -67,14 +71,16 @@ export const useLogStore = () => {
     "trace" | "debug" | "info" | "warn" | "error" | "fatal"
   >("info")
   const [offset, setOffset] = useState(0)
+  const [filter, setFilter] = useState("")
   const logStore = useMemo(
     () =>
       getLogStore({
         level,
         limit: limit.toString(),
         offset: offset.toString(),
+        filter,
       }),
-    [level, limit, offset],
+    [level, limit, offset, filter],
   )
   const { logs, ws } = useSyncExternalStore(
     logStore.subscribe,
@@ -89,6 +95,8 @@ export const useLogStore = () => {
     logs,
     offset,
     setOffset,
+    filter,
+    setFilter,
     ws,
   }
 }

@@ -10,7 +10,8 @@ export const Logs = ({ basePath }: { basePath: string }) => {
   const [dateTimeVisibility, setDateTimeVisibility] = useState<
     "hidden" | "timeOnly" | "visible"
   >("timeOnly")
-  const { level, setLevel, logs, offset, setOffset, ws } = useLogStore()
+  const { level, setLevel, logs, offset, setOffset, ws, filter, setFilter } =
+    useLogStore()
 
   return (
     <>
@@ -21,9 +22,18 @@ export const Logs = ({ basePath }: { basePath: string }) => {
               Logs <WSIndicator ws={ws?.ws} />
             </h2>
 
-            <a className={buttonStyle} href={`${basePath}/log.txt?limit=500`}>
-              View raw log.txt
-            </a>
+            <div className="flex gap-2 mb-2">
+              <a className={buttonStyle} href={`${basePath}/log.txt?limit=500`}>
+                View raw log.txt
+              </a>
+              <input
+                type="search"
+                placeholder="Filter logs..."
+                className="border border-gray-300 rounded-md text-slate-800 px-2 flex-grow placeholder:text-slate-700"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              />
+            </div>
 
             <div className="flex flex-wrap gap-2 justify-between w-full items-end">
               <div className="flex flex-wrap gap-2">

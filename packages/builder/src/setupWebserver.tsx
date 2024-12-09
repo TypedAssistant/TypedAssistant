@@ -204,11 +204,16 @@ export const startWebappServer = async ({
     .get(
       "/log.txt",
       async ({ query }) => {
-        return getLogsFromFile({ level: "trace", limit: query.limit })
+        return getLogsFromFile({
+          level: "trace",
+          limit: query.limit,
+          filter: query.filter,
+        })
       },
       {
         query: t.Object({
           limit: t.Optional(t.String()),
+          filter: t.Optional(t.String()),
         }),
       },
     )
@@ -224,11 +229,13 @@ export const startWebappServer = async ({
           t.Literal("fatal"),
         ]),
         offset: t.Optional(t.String()),
+        filter: t.Optional(t.String()),
       }),
 
       async open(ws) {
         ws.send(
           await getLogsFromFile({
+            filter: ws.data.query.filter,
             level: ws.data.query.level,
             limit: ws.data.query.limit,
             offset: ws.data.query.offset,
@@ -237,6 +244,7 @@ export const startWebappServer = async ({
         logSubscribers.set(ws.id, async () => {
           ws.send(
             await getLogsFromFile({
+              filter: ws.data.query.filter,
               level: ws.data.query.level,
               limit: ws.data.query.limit,
               offset: ws.data.query.offset,
@@ -343,10 +351,12 @@ const getLogsFromFile = async ({
   level,
   limit: limitProp,
   offset: offsetProp = "0",
+  filter,
 }: {
   level: keyof typeof levels
   limit?: string
   offset?: string
+  filter?: string
 }) => {
   try {
     const limit = Number(limitProp)
@@ -360,6 +370,12 @@ const getLogsFromFile = async ({
             : { msg: "Empty line", level: levels.fatal }) as LogSchema,
       )
       .filter((log) => log.level >= levels[level])
+      .filter((log) => {
+        if (!filter) return true
+        const keywords = filter.toLowerCase().split(" ")
+        const logText = JSON.stringify(log).toLowerCase()
+        return keywords.every((keyword) => logText.includes(keyword))
+      })
 
     const logFile = limit
       ? lines.slice(
