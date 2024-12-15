@@ -29,5 +29,5 @@ const stop = connection.getHassEntities((newEntities) => {
   emitChange(newEntities)
 })
 
-const getEntities = () => entities as Record<EntityId, HassEntity>
+const getEntities = () => entities as Record<EntityId, HassEntity | undefined>
 export { addListener, getEntities, stop }
