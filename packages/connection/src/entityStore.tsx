@@ -1,5 +1,6 @@
-import type { HassEntities } from "home-assistant-js-websocket"
+import type { HassEntities, HassEntity } from "home-assistant-js-websocket"
 import { connection } from "./global"
+import type { EntityId } from "@typed-assistant/types"
 
 let listeners: ((
   entities: HassEntities,
@@ -28,5 +29,5 @@ const stop = connection.getHassEntities((newEntities) => {
   emitChange(newEntities)
 })
 
-const getEntities = () => entities
+const getEntities = () => entities as Record<EntityId, HassEntity>
 export { addListener, getEntities, stop }
