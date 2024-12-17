@@ -1,5 +1,12 @@
 # @typed-assistant/react
 
+## 0.0.45
+
+### Patch Changes
+
+- Update useOnEntityStateChange so the "for" option can change without cancelling the timeout.
+- Add EntityStateChangeListener component.
+
 ## 0.0.44
 
 ### Patch Changes

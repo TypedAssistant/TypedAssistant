@@ -5,6 +5,7 @@ import { useCallback } from "react"
 import { beforeEach, expect, test, vi } from "vitest"
 import { useEntity } from "./useEntity"
 import { useOnEntityStateChange } from "./useOnEntityStateChange"
+import { EntityStateChangeListener } from "./EntityStateChangeListener"
 
 const mocks = await vi.hoisted(async () => {
   const { HaConnectionMock } = await import(
@@ -27,14 +28,15 @@ beforeEach(() => {
   mocks.connection.setEntities({})
 })
 
-test("useOnEntityStateChange updates when the state changes on startup", async () => {
+test("EntityStateChangeListener updates when the state changes on startup", async () => {
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      callOnStartup: true,
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      callOnStartup
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -88,12 +90,14 @@ test("useOnEntityStateChange updates when the state changes on startup", async (
   expect(onChangeCallback).toHaveBeenCalledTimes(2)
 })
 
-test("useOnEntityStateChange updates when the state changes", async () => {
+test("EntityStateChangeListener updates when the state changes", async () => {
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback)
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -143,14 +147,15 @@ test("useOnEntityStateChange updates when the state changes", async () => {
   expect(onChangeCallback).toHaveBeenCalledTimes(1)
 })
 
-test("useOnEntityStateChange updates only when the from option is correct", async () => {
+test("EntityStateChangeListener updates only when the from option is correct", async () => {
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      from: "on",
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      from="on"
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -201,14 +206,15 @@ test("useOnEntityStateChange updates only when the from option is correct", asyn
   expect(onChangeCallback).toHaveBeenCalledTimes(2)
 })
 
-test("useOnEntityStateChange updates only when the to option is correct", async () => {
+test("EntityStateChangeListener updates only when the to option is correct", async () => {
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      to: "off",
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      to="off"
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -268,15 +274,16 @@ test("useOnEntityStateChange updates only when the to option is correct", async 
   expect(onChangeCallback).toHaveBeenCalledTimes(2)
 })
 
-test("useOnEntityStateChange updates only when the to and from options are correct", async () => {
+test("EntityStateChangeListener updates only when the to and from options are correct", async () => {
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      from: "on",
-      to: "off",
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      from="on"
+      to="off"
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -336,16 +343,17 @@ test("useOnEntityStateChange updates only when the to and from options are corre
   expect(onChangeCallback).toHaveBeenCalledTimes(2)
 })
 
-test("useOnEntityStateChange updates when the for time has passed", async () => {
+test("EntityStateChangeListener updates when the for time has passed", async () => {
   vi.useFakeTimers()
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      to: "off",
-      for: 1000,
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      to="off"
+      for={1000}
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -387,16 +395,17 @@ test("useOnEntityStateChange updates when the for time has passed", async () => 
   expect(onChangeCallback).toHaveBeenCalledTimes(1)
 })
 
-test("useOnEntityStateChange does not update when the for time has not passed", async () => {
+test("EntityStateChangeListener does not update when the for time has not passed", async () => {
   vi.useFakeTimers()
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      to: "off",
-      for: 1000,
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      to="off"
+      for={1000}
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -467,16 +476,17 @@ test("useOnEntityStateChange does not update when the for time has not passed", 
   )
 })
 
-test("useOnEntityStateChange does not take into account state that's already there first time", async () => {
+test("EntityStateChangeListener does not take into account state that's already there first time", async () => {
   vi.useFakeTimers()
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      to: "off",
-      for: 1000,
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      to="off"
+      for={1000}
+    />
+  ))
   const Component = ({ showComponent }: { showComponent: boolean }) => (
     <>{showComponent ? <TestComponent /> : null}</>
   )
@@ -502,16 +512,17 @@ test("useOnEntityStateChange does not take into account state that's already the
   expect(onChangeCallback).toHaveBeenCalledTimes(0)
 })
 
-test("useOnEntityStateChange by default only updates when the state changes", async () => {
+test("EntityStateChangeListener by default only updates when the state changes", async () => {
   vi.useFakeTimers()
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      to: "off",
-      for: 1000,
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      to="off"
+      for={1000}
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -556,17 +567,18 @@ test("useOnEntityStateChange by default only updates when the state changes", as
   )
 })
 
-test("useOnEntityStateChange updates when the passed deps change", async () => {
+test("EntityStateChangeListener updates when the passed deps change", async () => {
   vi.useFakeTimers()
   const onChangeCallback = vi.fn(() => {})
-  const TestComponent = vi.fn(() => {
-    useOnEntityStateChange("light.bedroom_lamp_bulb", onChangeCallback, {
-      to: "off",
-      for: 1000,
-      deps: ["state", "attributes.changed"],
-    })
-    return null
-  })
+  const TestComponent = vi.fn(() => (
+    <EntityStateChangeListener
+      entityId="light.bedroom_lamp_bulb"
+      onChange={onChangeCallback}
+      to="off"
+      for={1000}
+      deps={["state", "attributes.changed"]}
+    />
+  ))
 
   render(<TestComponent />)
 
@@ -619,7 +631,7 @@ test("useOnEntityStateChange updates when the passed deps change", async () => {
   )
 })
 
-test("useOnEntityStateChange still updates at the correct timeout when onChangeCallback changes", async () => {
+test("EntityStateChangeListener still updates at the correct timeout when onChangeCallback changes", async () => {
   vi.useFakeTimers()
   const onChangeCallback = vi.fn(
     (washingMachineIsOn: boolean) => washingMachineIsOn,
@@ -628,14 +640,16 @@ test("useOnEntityStateChange still updates at the correct timeout when onChangeC
     const washingMachineState = useEntity("switch.washing_machine")?.state
     const washingMachineIsOn = washingMachineState === "on"
 
-    useOnEntityStateChange(
-      "sensor.washing_machine_is_running",
-      useCallback(() => {
-        onChangeCallback(washingMachineIsOn)
-      }, [washingMachineIsOn]),
-      { for: 1000, to: "off" },
+    return (
+      <EntityStateChangeListener
+        entityId="sensor.washing_machine_is_running"
+        onChange={useCallback(() => {
+          onChangeCallback(washingMachineIsOn)
+        }, [washingMachineIsOn])}
+        to="off"
+        for={1000}
+      />
     )
-    return null
   })
 
   render(<TestComponent />)
@@ -762,21 +776,24 @@ test("useOnEntityStateChange still updates at the correct timeout when onChangeC
   expect(onChangeCallback).toHaveBeenCalledTimes(2)
 })
 
-test("useOnEntityStateChange still updates at the correct timeout when the for prop increases", async () => {
+test("EntityStateChangeListener still updates at the correct timeout when the for prop increases", async () => {
   vi.useFakeTimers()
   const onChangeCallback = vi.fn(() => {})
   const TestComponent = vi.fn(() => {
     const delayTime = Number(
       useEntity("sensor.delay_time")?.state ?? ONE_MINUTE,
     )
-    useOnEntityStateChange(
-      "binary_sensor.bedroom_motion_sensor_occupancy",
-      useCallback(() => {
-        onChangeCallback()
-      }, []),
-      { for: delayTime, to: "on" },
+
+    return (
+      <EntityStateChangeListener
+        entityId="binary_sensor.bedroom_motion_sensor_occupancy"
+        onChange={useCallback(() => {
+          onChangeCallback()
+        }, [])}
+        to="on"
+        for={delayTime}
+      />
     )
-    return null
   })
 
   render(<TestComponent />)
@@ -822,21 +839,24 @@ test("useOnEntityStateChange still updates at the correct timeout when the for p
   expect(onChangeCallback).toHaveBeenCalledTimes(1)
 })
 
-test("useOnEntityStateChange still updates at the correct timeout when the for prop decreases", async () => {
+test("EntityStateChangeListener still updates at the correct timeout when the for prop decreases", async () => {
   vi.useFakeTimers()
   const onChangeCallback = vi.fn(() => {})
   const TestComponent = vi.fn(() => {
     const delayTime = Number(
       useEntity("sensor.delay_time")?.state ?? ONE_MINUTE,
     )
-    useOnEntityStateChange(
-      "binary_sensor.bedroom_motion_sensor_occupancy",
-      useCallback(() => {
-        onChangeCallback()
-      }, []),
-      { for: delayTime, to: "on" },
+
+    return (
+      <EntityStateChangeListener
+        entityId="binary_sensor.bedroom_motion_sensor_occupancy"
+        onChange={useCallback(() => {
+          onChangeCallback()
+        }, [])}
+        to="on"
+        for={delayTime}
+      />
     )
-    return null
   })
 
   render(<TestComponent />)
