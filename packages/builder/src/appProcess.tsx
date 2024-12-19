@@ -216,7 +216,7 @@ function setupWatcher({
     app: Subprocess<"ignore", "pipe", "pipe">
   }
 }) {
-  logger.debug({ emoji: "👀" }, "Watching directory: ${directoryToWatch}")
+  logger.debug({ emoji: "👀" }, `Watching directory: ${directoryToWatch}`)
   const watcher = watch(
     directoryToWatch,
     { recursive: true },

@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.79
+
+### Patch Changes
+
+- Fix for log
+
 ## 0.0.78
 
 ### Patch Changes
