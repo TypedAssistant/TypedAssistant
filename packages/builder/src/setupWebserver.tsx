@@ -297,7 +297,15 @@ export const startWebappServer = async ({
   })
 
   const watchLogFileSize = async () => {
-    if (Bun.file("./log.txt").size > 3 * ONE_MEGABYTE) {
+    const logFileSize = Bun.file("./log.txt").size
+    const limit = 3 * ONE_MEGABYTE
+
+    logger.debug(
+      { emoji: "🗒️" },
+      `log.txt size: ${logFileSize}. Limit is ${limit}.`,
+    )
+
+    if (logFileSize > limit) {
       logger.debug(
         { emoji: "🗑️" },
         "log.txt is too big, deleting old log.txt and renaming new log.txt to old log.txt",
