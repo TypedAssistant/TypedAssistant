@@ -361,30 +361,30 @@ const getLogsFromFile = async ({
   try {
     const limit = Number(limitProp)
     const offset = Number(offsetProp)
-    const lines = (await Bun.file("./log.txt").text())
-      .split("\n")
-      .map(
-        (line) =>
-          (line
-            ? JSON.parse(line)
-            : { msg: "Empty line", level: levels.fatal }) as LogSchema,
-      )
-      .filter((log) => log.level >= levels[level])
-      .filter((log) => {
-        if (!filter) return true
-        const keywords = filter.toLowerCase().split(" ")
-        const logText = JSON.stringify(log).toLowerCase()
-        return keywords.every((keyword) => logText.includes(keyword))
-      })
-
-    const logFile = limit
-      ? lines.slice(
-          lines.length - 1 - limit * (offset + 1),
-          lines.length - 1 - limit * offset,
+    const logs = (
+      await Bun.file("./log.txt")
+        .text()
+        .then((text) => text.split("\n"))
+        .then((lines) =>
+          limit
+            ? lines.slice(
+                lines.length - 1 - limit * (offset + 1),
+                lines.length - 1 - limit * offset,
+              )
+            : lines,
         )
-      : lines
+    ).reduce((result, line) => {
+      if (filter && !line.toLowerCase().includes(filter.toLowerCase()))
+        return result
 
-    return { logs: logFile }
+      const log = line
+        ? JSON.parse(line)
+        : { msg: "Empty line", level: levels.fatal }
+      if (log.level < levels[level]) return result
+      return result.concat(log)
+    }, [] as LogSchema[])
+
+    return { logs }
   } catch (e) {
     return {
       logs: [

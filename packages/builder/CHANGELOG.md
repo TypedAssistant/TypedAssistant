@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.77
+
+### Patch Changes
+
+- Optimise retrieval of logs.
+
 ## 0.0.76
 
 ### Patch Changes
