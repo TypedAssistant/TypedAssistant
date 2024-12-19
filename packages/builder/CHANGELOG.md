@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.78
+
+### Patch Changes
+
+- Limit log.txt size to 3MB.
+
 ## 0.0.77
 
 ### Patch Changes

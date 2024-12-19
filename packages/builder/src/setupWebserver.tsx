@@ -1,5 +1,9 @@
 import type { LogSchema } from "@typed-assistant/logger"
 import { logger } from "@typed-assistant/logger"
+import { levels } from "@typed-assistant/logger/levels"
+import { ONE_MINUTE, ONE_SECOND } from "@typed-assistant/utils/durations"
+import { getSupervisorAPI } from "@typed-assistant/utils/getHassAPI"
+import { withErrorHandling } from "@typed-assistant/utils/withErrorHandling"
 import Convert from "ansi-to-html"
 import type { Subprocess } from "bun"
 import { $ } from "bun"
@@ -10,10 +14,6 @@ import type { List, String } from "ts-toolbelt"
 import { getAddonInfo } from "./getAddonInfo"
 import { addKillListener, killSubprocess } from "./killProcess"
 import { restartAddon } from "./restartAddon"
-import { levels } from "@typed-assistant/logger/levels"
-import { getSupervisorAPI } from "@typed-assistant/utils/getHassAPI"
-import { withErrorHandling } from "@typed-assistant/utils/withErrorHandling"
-import { ONE_SECOND } from "@typed-assistant/utils/durations"
 
 const indexHtmlFilePath = `${import.meta.dir}/webserver/index.html` as const
 const cssFile = `${import.meta.dir}/webserver/input.css` as const
@@ -296,6 +296,39 @@ export const startWebappServer = async ({
     }
   })
 
+  const watchLogFileSize = async () => {
+    if (Bun.file("./log.txt").size > 3 * ONE_MEGABYTE) {
+      logger.debug(
+        { emoji: "🗑️" },
+        "log.txt is too big, deleting old log.txt and renaming new log.txt to old log.txt",
+      )
+      await $`rm -f ./log.txt.old`.quiet().catch((e) => {
+        logger.error(
+          { emoji: "🚨", additionalDetails: e.message },
+          "Failed to delete old log.txt",
+        )
+      })
+
+      await $`cp ./log.txt ./log.txt.old`.catch((e) => {
+        logger.error(
+          { emoji: "🚨", additionalDetails: e.message },
+          "Failed copying log.txt to log.txt.old",
+        )
+      })
+
+      await $`cat /dev/null > ./log.txt`.catch((e) => {
+        logger.error(
+          { emoji: "🚨", additionalDetails: e.message },
+          "Failed to empty log.txt",
+        )
+      })
+    }
+
+    setTimeout(watchLogFileSize, 10 * ONE_MINUTE)
+  }
+
+  watchLogFileSize()
+
   getStats()
 
   addKillListener(async () => {
@@ -361,6 +394,7 @@ const getLogsFromFile = async ({
   try {
     const limit = Number(limitProp)
     const offset = Number(offsetProp)
+
     const logs = (
       await Bun.file("./log.txt")
         .text()
@@ -400,6 +434,7 @@ const getLogsFromFile = async ({
     }
   }
 }
+const ONE_MEGABYTE = 1024 * 1024
 
 const getBaseName = <const TString extends string>(path: TString) => {
   return basename(path) as List.Last<String.Split<TString, "/">>

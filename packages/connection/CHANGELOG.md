@@ -1,5 +1,11 @@
 # @typed-assistant/connection
 
+## 0.0.29
+
+### Patch Changes
+
+- @typed-assistant/utils@0.0.19
+
 ## 0.0.28
 
 ### Patch Changes

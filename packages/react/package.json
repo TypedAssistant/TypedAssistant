@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/react",
-  "version": "0.0.45",
+  "version": "0.0.46",
   "exports": {
     "./Status": "./src/Status.tsx",
     "./EntityStateChangeListener": "./src/EntityStateChangeListener.tsx",
