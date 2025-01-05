@@ -3,9 +3,8 @@ import { ONE_MINUTE, ONE_SECOND } from "@typed-assistant/utils/durations"
 import type { HassEntityAttributeBase } from "home-assistant-js-websocket"
 import { useCallback } from "react"
 import { beforeEach, expect, test, vi } from "vitest"
-import { useEntity } from "./useEntity"
-import { useOnEntityStateChange } from "./useOnEntityStateChange"
 import { EntityStateChangeListener } from "./EntityStateChangeListener"
+import { useEntity } from "./useEntity"
 
 const mocks = await vi.hoisted(async () => {
   const { HaConnectionMock } = await import(

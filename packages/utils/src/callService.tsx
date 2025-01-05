@@ -21,9 +21,9 @@ export const callService = async <
   quietLogger.info(
     { additionalDetails: JSON.stringify(serviceData, null, 2), emoji: "🤵‍♂️" },
     `${domain}/${String(service)} called` +
-      (entity_id
-        ? ` with ${Array.isArray(entity_id) ? entity_id.join(", ") : entity_id}`
-        : ""),
+    (entity_id
+      ? ` with ${Array.isArray(entity_id) ? entity_id.join(", ") : entity_id}`
+      : ""),
   )
 
   try {

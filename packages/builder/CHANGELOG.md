@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.81
+
+### Patch Changes
+
+- Pin Elysia to 1.1.x.
+
 ## 0.0.79
 
 ### Patch Changes
