@@ -51,7 +51,7 @@ importers:
         specifier: ^2.0.0
         version: 2.2.0
       elysia:
-        specifier: ^1.1.25
+        specifier: ~1.1.25
         version: 1.1.25(@sinclair/typebox@0.34.2)(typescript@5.6.3)
       ignore:
         specifier: ^5.3.0
