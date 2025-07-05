@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/builder",
-  "version": "0.0.81",
+  "version": "0.0.82",
   "exports": {
     "./appProcess": "./src/appProcess.tsx",
     "./bunInstall": "./src/bunInstall.tsx",

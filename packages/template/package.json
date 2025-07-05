@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/template",
-  "version": "0.0.99",
+  "version": "0.0.100",
   "private": true,
   "type": "module",
   "scripts": {

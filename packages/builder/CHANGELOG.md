@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.82
+
+### Patch Changes
+
+- Restart app when an empty string is returned from the process.
+
 ## 0.0.81
 
 ### Patch Changes
