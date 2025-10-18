@@ -45,13 +45,7 @@ const getReader = (
 ) => {
   const cachedReader = readers[type].get(stream)
   if (!cachedReader) {
-    readers[type].forEach((reader, cachedStream) => {
-      // Properly release the lock before deleting
-      try {
-        reader.releaseLock()
-      } catch (e) {
-        // Ignore if already released
-      }
+    readers[type].forEach((_reader, cachedStream) => {
       readers[type].delete(cachedStream)
     })
   }
@@ -71,8 +65,6 @@ let stats = {
   memory_percent: null as number | null,
   max_memory_usage: 0,
 }
-let statsInterval: ReturnType<typeof setInterval> | null = null
-
 const getStats = async () => {
   const { data, error } = await withErrorHandling(
     getSupervisorAPI<{
@@ -101,6 +93,8 @@ const getStats = async () => {
           : stats.max_memory_usage,
     }
   }
+
+  setTimeout(getStats, 10 * ONE_SECOND)
 }
 
 export const startWebappServer = async ({
@@ -239,7 +233,14 @@ export const startWebappServer = async ({
       }),
 
       async open(ws) {
-        // Set the log subscriber first to avoid race conditions
+        ws.send(
+          await getLogsFromFile({
+            filter: ws.data.query.filter,
+            level: ws.data.query.level,
+            limit: ws.data.query.limit,
+            offset: ws.data.query.offset,
+          }),
+        )
         logSubscribers.set(ws.id, async () => {
           ws.send(
             await getLogsFromFile({
@@ -250,15 +251,6 @@ export const startWebappServer = async ({
             }),
           )
         })
-        // Then send the initial logs
-        ws.send(
-          await getLogsFromFile({
-            filter: ws.data.query.filter,
-            level: ws.data.query.level,
-            limit: ws.data.query.limit,
-            offset: ws.data.query.offset,
-          }),
-        )
       },
       close(ws) {
         logSubscribers.delete(ws.id)
@@ -345,34 +337,11 @@ export const startWebappServer = async ({
 
   watchLogFileSize()
 
-  // Start stats polling interval
-  statsInterval = setInterval(getStats, 10 * 1000)
+  getStats()
 
   addKillListener(async () => {
     watcher.close()
     await server.stop()
-    // Clean up all websocket subscribers
-    subscribers.clear()
-    logSubscribers.clear()
-    // Release and clear all readers
-    for (const reader of readers.stdout.values()) {
-      try {
-        reader.releaseLock()
-      } catch (e) {
-        /* ignore */
-      }
-    }
-    for (const reader of readers.stderr.values()) {
-      try {
-        reader.releaseLock()
-      } catch (e) {
-        /* ignore */
-      }
-    }
-    readers.stdout.clear()
-    readers.stderr.clear()
-    // Clear stats polling interval
-    if (statsInterval) clearInterval(statsInterval)
   })
 
   // eslint-disable-next-line no-constant-condition
@@ -404,14 +373,12 @@ export const startWebappServer = async ({
           emoji: "💀",
           additionalDetails: JSON.stringify({
             exitCode: getSubprocesses().app.exitCode,
-            stderrValue,
-            stderrValueDecoded: decodedString,
           }),
         },
-        "Process is returning an empty string. Restarting app...",
+        "Process is returning an empty string",
       )
-      onRestartAppRequest()
-      break
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      continue
     }
     subscribers.forEach((send) => send(convertedMessage))
   }

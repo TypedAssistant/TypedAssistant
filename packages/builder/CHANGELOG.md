@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.83
+
+### Patch Changes
+
+- Undo last fix.
+
 ## 0.0.82
 
 ### Patch Changes
