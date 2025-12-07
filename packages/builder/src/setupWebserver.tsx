@@ -346,17 +346,35 @@ export const startWebappServer = async ({
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    getSubprocesses().app.exitCode
-    const stdoutReader = getReader("stdout", getSubprocesses().app.stdout)
-    const stderrReader = getReader("stderr", getSubprocesses().app.stderr)
-    const { value } = await stdoutReader.read()
-    const { value: stderrValue } = value
-      ? { value: undefined }
-      : await stderrReader.read()
+    const app = getSubprocesses().app
+    const stdoutReader = getReader("stdout", app.stdout)
+    const stderrReader = getReader("stderr", app.stderr)
+    const stdoutResult = await stdoutReader.read()
+    const stderrResult =
+      stdoutResult.value === undefined
+        ? await stderrReader.read()
+        : ({
+            value: undefined,
+            done: true,
+          } satisfies ReadableStreamDefaultReadDoneResult)
 
-    const decodedString = stderrValue
-      ? decoder.decode(stderrValue)
-      : decoder.decode(value)
+    const streamEnded =
+      stdoutResult.done &&
+      (stderrResult.done || stderrResult.value === undefined)
+    if (streamEnded) {
+      logger.warn(
+        {
+          emoji: "😴",
+          additionalDetails: JSON.stringify({ exitCode: app.exitCode }),
+        },
+        "Subprocess output streams ended; waiting for restart or new output",
+      )
+      await new Promise((resolve) => setTimeout(resolve, 1000))
+      continue
+    }
+
+    const chunk = stdoutResult.value ?? stderrResult.value
+    const decodedString = chunk ? decoder.decode(chunk) : ""
     const convertedMessage = convert.toHtml(decodedString)
     if (convertedMessage !== "") {
       lastMessage = convertedMessage
