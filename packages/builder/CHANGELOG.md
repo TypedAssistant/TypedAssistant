@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.84
+
+### Patch Changes
+
+- Improve logging for random crashes.
+
 ## 0.0.83
 
 ### Patch Changes
