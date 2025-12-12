@@ -101,12 +101,14 @@ export const startWebappServer = async ({
   basePath,
   getSubprocesses,
   onRestartAppRequest,
+  onProcessError,
 }: {
   basePath: string
   getSubprocesses: () => {
     app: Subprocess<"ignore", "pipe", "pipe">
   }
   onRestartAppRequest: () => void
+  onProcessError: (message: string) => void
 }) => {
   const buildResult = await Bun.build({
     entrypoints: [tsEntryPoint],
@@ -344,6 +346,8 @@ export const startWebappServer = async ({
     await server.stop()
   })
 
+  let emptyStringCount = 0
+
   // eslint-disable-next-line no-constant-condition
   while (true) {
     const app = getSubprocesses().app
@@ -380,11 +384,15 @@ export const startWebappServer = async ({
       lastMessage = convertedMessage
     }
     if (convertedMessage === "") {
+      emptyStringCount += 1
+      const emptyStringMessage =
+        "Process is returning an empty string"
+      if (emptyStringCount === 10) {
+        onProcessError(emptyStringMessage)
+      }
       subscribers.forEach((send) =>
-        send(
-          "Process is returning an empty string. This was the last non-empty message:\n\n" +
-            lastMessage,
-        ),
+        send("Process is returning an empty string. This was the last non-empty message:\n\n" +
+        lastMessage),
       )
       logger.fatal(
         {
@@ -393,11 +401,12 @@ export const startWebappServer = async ({
             exitCode: getSubprocesses().app.exitCode,
           }),
         },
-        "Process is returning an empty string",
+        emptyStringMessage,
       )
       await new Promise((resolve) => setTimeout(resolve, 1000))
       continue
     }
+    emptyStringCount = 0
     subscribers.forEach((send) => send(convertedMessage))
   }
 

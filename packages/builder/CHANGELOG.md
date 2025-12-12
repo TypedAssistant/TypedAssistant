@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.85
+
+### Patch Changes
+
+- Restart app when empty string bug is detected.
+
 ## 0.0.84
 
 ### Patch Changes

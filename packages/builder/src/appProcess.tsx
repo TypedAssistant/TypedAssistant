@@ -45,6 +45,16 @@ export async function setup({
         subprocesses,
       )
     },
+    onProcessError: async (message) => {
+      const messageAll = `${message}. Restarting app...`
+      logger.fatal({  emoji: "🚨" }, messageAll)
+      onProcessError?.(messageAll, addonUrl)
+      subprocesses = await killAndRestartApp(
+        entryFile,
+        { mdiPaths },
+        subprocesses,
+      )
+    },
   })
   setupWatcher({
     directoryToWatch,
