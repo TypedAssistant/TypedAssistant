@@ -1,5 +1,14 @@
 # @typed-assistant/template
 
+## 0.0.105
+
+### Patch Changes
+
+- Update react, react-dom and ink to latest versions.
+- Updated dependencies
+  - @typed-assistant/builder@0.0.86
+  - @typed-assistant/react@0.0.47
+
 ## 0.0.104
 
 ### Patch Changes

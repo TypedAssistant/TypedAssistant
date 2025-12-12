@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.86
+
+### Patch Changes
+
+- Update react, react-dom and ink to latest versions.
+
 ## 0.0.85
 
 ### Patch Changes
