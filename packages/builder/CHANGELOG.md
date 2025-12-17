@@ -1,5 +1,12 @@
 # @typed-assistant/builder
 
+## 0.0.87
+
+### Patch Changes
+
+- Apply search filters before paginating logs so filtered results span all pages.
+- Hide the Next pagination button entirely when no additional log pages are available.
+
 ## 0.0.86
 
 ### Patch Changes
