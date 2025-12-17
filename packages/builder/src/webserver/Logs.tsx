@@ -10,8 +10,10 @@ export const Logs = ({ basePath }: { basePath: string }) => {
   const [dateTimeVisibility, setDateTimeVisibility] = useState<
     "hidden" | "timeOnly" | "visible"
   >("timeOnly")
-  const { level, setLevel, logs, offset, setOffset, ws, filter, setFilter } =
+  const { level, setLevel, logs, offset, setOffset, ws, filter, setFilter, limit } =
     useLogStore()
+
+  const hasNextPage = limit ? logs.length >= limit : false
 
   return (
     <>
@@ -31,7 +33,10 @@ export const Logs = ({ basePath }: { basePath: string }) => {
                 placeholder="Filter logs..."
                 className="border border-gray-300 rounded-md text-slate-800 px-2 flex-grow placeholder:text-slate-700"
                 value={filter}
-                onChange={(e) => setFilter(e.target.value)}
+                onChange={(e) => {
+                  setOffset(0)
+                  setFilter(e.target.value)
+                }}
               />
             </div>
 
@@ -63,7 +68,10 @@ export const Logs = ({ basePath }: { basePath: string }) => {
                   <select
                     className="border border-gray-300 rounded-md text-slate-800 px-2"
                     id="level"
-                    onChange={(e) => setLevel(e.target.value as typeof level)}
+                    onChange={(e) => {
+                      setOffset(0)
+                      setLevel(e.target.value as typeof level)
+                    }}
                     value={level}
                   >
                     <option value="trace">Trace</option>
@@ -85,12 +93,14 @@ export const Logs = ({ basePath }: { basePath: string }) => {
                     Previous
                   </button>
                 )}
-                <button
-                  className={buttonStyle}
-                  onClick={() => setOffset((offset) => offset + 1)}
-                >
-                  Next
-                </button>
+                {hasNextPage && (
+                  <button
+                    className={buttonStyle}
+                    onClick={() => setOffset((offset) => offset + 1)}
+                  >
+                    Next
+                  </button>
+                )}
               </div>
             </div>
           </>

@@ -427,33 +427,52 @@ const getLogsFromFile = async ({
   filter?: string
 }) => {
   try {
-    const limit = Number(limitProp)
-    const offset = Number(offsetProp)
+    const parsedLimit = Number(limitProp)
+    const limit = Number.isFinite(parsedLimit) && parsedLimit > 0
+      ? parsedLimit
+      : undefined
+    const parsedOffset = Number(offsetProp)
+    const offset = Number.isFinite(parsedOffset) && parsedOffset >= 0
+      ? parsedOffset
+      : 0
 
-    const logs = (
-      await Bun.file("./log.txt")
-        .text()
-        .then((text) => text.split("\n"))
-        .then((lines) =>
-          limit
-            ? lines.slice(
-                lines.length - 1 - limit * (offset + 1),
-                lines.length - 1 - limit * offset,
-              )
-            : lines,
+    const normalizedFilter = filter?.toLowerCase().trim()
+
+    const parsedLogs = (await Bun.file("./log.txt").text())
+      .split("\n")
+      .reduce((result, line) => {
+        if (!line) return result
+
+        try {
+          const log = JSON.parse(line) as LogSchema
+          return result.concat(log)
+        } catch (e) {
+          return result.concat({
+            msg: e instanceof Error ? e.message : "Unknown parse error",
+            level: levels.fatal,
+          })
+        }
+      }, [] as LogSchema[])
+
+    const filteredLogs = parsedLogs.filter((log) => {
+      if (log.level < levels[level]) return false
+
+      if (normalizedFilter) {
+        const haystack = JSON.stringify(log).toLowerCase()
+        if (!haystack.includes(normalizedFilter)) return false
+      }
+
+      return true
+    })
+
+    const paginatedLogs = limit
+      ? filteredLogs.slice(
+          Math.max(filteredLogs.length - limit * (offset + 1), 0),
+          filteredLogs.length - limit * offset || filteredLogs.length,
         )
-    ).reduce((result, line) => {
-      if (filter && !line.toLowerCase().includes(filter.toLowerCase()))
-        return result
+      : filteredLogs
 
-      const log = line
-        ? JSON.parse(line)
-        : { msg: "Empty line", level: levels.fatal }
-      if (log.level < levels[level]) return result
-      return result.concat(log)
-    }, [] as LogSchema[])
-
-    return { logs }
+    return { logs: paginatedLogs }
   } catch (e) {
     return {
       logs: [
