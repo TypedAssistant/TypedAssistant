@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.88
+
+### Patch Changes
+
+- Fire onProcessError when empty stream is detected in web server.
+
 ## 0.0.87
 
 ### Patch Changes

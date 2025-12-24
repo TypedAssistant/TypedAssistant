@@ -347,6 +347,7 @@ export const startWebappServer = async ({
   })
 
   let emptyStringCount = 0
+  let outputStreamsEmptyCount = 0
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -374,6 +375,12 @@ export const startWebappServer = async ({
         "Subprocess output streams ended; waiting for restart or new output",
       )
       await new Promise((resolve) => setTimeout(resolve, 1000))
+      outputStreamsEmptyCount += 1
+      const outputStreamsEmptyMessage = "Process output streams have ended"
+      if (outputStreamsEmptyCount === 10) {
+        onProcessError(outputStreamsEmptyMessage)
+        break
+      }
       continue
     }
 
@@ -385,14 +392,16 @@ export const startWebappServer = async ({
     }
     if (convertedMessage === "") {
       emptyStringCount += 1
-      const emptyStringMessage =
-        "Process is returning an empty string"
+      const emptyStringMessage = "Process is returning an empty string"
       if (emptyStringCount === 10) {
         onProcessError(emptyStringMessage)
+        break
       }
       subscribers.forEach((send) =>
-        send("Process is returning an empty string. This was the last non-empty message:\n\n" +
-        lastMessage),
+        send(
+          "Process is returning an empty string. This was the last non-empty message:\n\n" +
+            lastMessage,
+        ),
       )
       logger.fatal(
         {
@@ -428,13 +437,11 @@ const getLogsFromFile = async ({
 }) => {
   try {
     const parsedLimit = Number(limitProp)
-    const limit = Number.isFinite(parsedLimit) && parsedLimit > 0
-      ? parsedLimit
-      : undefined
+    const limit =
+      Number.isFinite(parsedLimit) && parsedLimit > 0 ? parsedLimit : undefined
     const parsedOffset = Number(offsetProp)
-    const offset = Number.isFinite(parsedOffset) && parsedOffset >= 0
-      ? parsedOffset
-      : 0
+    const offset =
+      Number.isFinite(parsedOffset) && parsedOffset >= 0 ? parsedOffset : 0
 
     const normalizedFilter = filter?.toLowerCase().trim()
 
@@ -450,7 +457,7 @@ const getLogsFromFile = async ({
           return result.concat({
             msg: e instanceof Error ? e.message : "Unknown parse error",
             level: levels.fatal,
-          })
+          } as LogSchema)
         }
       }, [] as LogSchema[])
 
