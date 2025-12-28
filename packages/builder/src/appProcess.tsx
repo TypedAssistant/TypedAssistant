@@ -47,16 +47,20 @@ export async function setup({
     },
     onProcessError: async (message) => {
       const messageAll = `${message}. Restarting app...`
-      logger.fatal({  emoji: "🚨" }, messageAll)
+      logger.fatal({ emoji: "🚨" }, messageAll)
       onProcessError?.(messageAll, addonUrl)
-      subprocesses = await killAndRestartApp(
+      if (subprocesses.app) await killSubprocess(subprocesses.app)
+      if (watcher) watcher.close()
+      if (processChecker) processChecker.stop()
+      if ("stop" in gitPoller) gitPoller.stop()
+      setup({
         entryFile,
-        { mdiPaths },
-        subprocesses,
-      )
+        mdiPaths,
+        onProcessError,
+      })
     },
   })
-  setupWatcher({
+  const watcher = setupWatcher({
     directoryToWatch,
     entryFile,
     mdiPaths,
@@ -66,7 +70,7 @@ export async function setup({
     getSubprocesses: () => subprocesses,
   })
 
-  checkProcesses(entryFile, {
+  const processChecker = checkProcesses(entryFile, {
     onMultiProcessError: (ps) => {
       const message = `Multiple processes detected. Restarting addon...`
       logger.fatal({ additionalDetails: ps, emoji: "🚨" }, message)
@@ -84,7 +88,8 @@ export async function setup({
       )
     },
   })
-  await setupGitSync({
+
+  const gitPoller = await setupGitSync({
     onChangesPulled: async () => {
       subprocesses = await killAndRestartApp(
         entryFile,
@@ -133,7 +138,7 @@ async function killAndRestartApp(
 
 let multipleProcessesErrorCount = 0
 let noProcessesErrorCount = 0
-const checkProcesses = async (
+const checkProcesses = (
   entryFile: string,
   {
     onMultiProcessError,
@@ -143,33 +148,33 @@ const checkProcesses = async (
     onNoProcessError?: (psOutput: string) => void | Promise<void>
   },
 ) => {
-  const ps = await $`ps -f`.text()
-  const matches = ps.match(new RegExp(`bun .+${entryFile}`, "gmi")) ?? []
+  const interval = setInterval(async () => {
+    const ps = await $`ps -f`.text()
+    logger.debug({ emoji: "🔍" }, `Checking processes...\n${ps}`)
+    const matches = ps.match(new RegExp(`bun .+${entryFile}`, "gmi")) ?? []
 
-  if (matches.length > 1) {
-    multipleProcessesErrorCount++
-    if (multipleProcessesErrorCount > 5) {
-      await onMultiProcessError?.(ps)
-      return
+    if (matches.length > 1) {
+      multipleProcessesErrorCount++
+      if (multipleProcessesErrorCount > 5) {
+        await onMultiProcessError?.(ps)
+        return
+      }
+    } else {
+      multipleProcessesErrorCount = 0
     }
-  } else {
-    multipleProcessesErrorCount = 0
-  }
 
-  if (matches.length === 0) {
-    noProcessesErrorCount++
-    if (noProcessesErrorCount > 5) {
-      await onNoProcessError?.(ps)
-      return
+    if (matches.length === 0) {
+      noProcessesErrorCount++
+      if (noProcessesErrorCount > 5) {
+        await onNoProcessError?.(ps)
+        return
+      }
+    } else {
+      noProcessesErrorCount = 0
     }
-  } else {
-    noProcessesErrorCount = 0
-  }
+  }, 10000)
 
-  setTimeout(
-    () => checkProcesses(entryFile, { onMultiProcessError, onNoProcessError }),
-    5000,
-  )
+  return { stop: () => clearInterval(interval) }
 }
 
 const getAddonInfo = async () => {
@@ -200,7 +205,7 @@ const setupGitSync = async ({
   }
 
   logger.warn({ emoji: "⬇️" }, "Setting up git poller...")
-  await setupGitPoller({ onChangesPulled })
+  return setupGitPoller({ onChangesPulled })
 }
 
 const ig = ignore().add(

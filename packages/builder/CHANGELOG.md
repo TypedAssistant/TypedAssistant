@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.89
+
+### Patch Changes
+
+- More robust restarting of app when process error occurs.
+
 ## 0.0.88
 
 ### Patch Changes

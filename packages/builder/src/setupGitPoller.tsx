@@ -11,13 +11,14 @@ export const setupGitPoller = async ({
   onChangesPulled: () => void
 }) => {
   const duration = gitPullPollDuration ?? 30
-  await pullChanges({ onChangesPulled })
-  logger.debug(
-    { emoji: "⬇️⏳" },
-    `Pulling changes again in ${duration} seconds...`,
-  )
 
-  setTimeout(() => {
-    setupGitPoller({ gitPullPollDuration, onChangesPulled })
+  const interval = setInterval(async () => {
+    await pullChanges({ onChangesPulled })
+    logger.debug(
+      { emoji: "⬇️⏳" },
+      `Pulling changes again in ${duration} seconds...`,
+    )
   }, duration * ONE_SECOND)
+
+  return { stop: () => clearInterval(interval) }
 }

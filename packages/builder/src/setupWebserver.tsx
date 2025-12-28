@@ -346,8 +346,7 @@ export const startWebappServer = async ({
     await server.stop()
   })
 
-  let emptyStringCount = 0
-  let outputStreamsEmptyCount = 0
+  let fatalErrorMessage = ""
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
@@ -367,21 +366,8 @@ export const startWebappServer = async ({
       stdoutResult.done &&
       (stderrResult.done || stderrResult.value === undefined)
     if (streamEnded) {
-      logger.warn(
-        {
-          emoji: "😴",
-          additionalDetails: JSON.stringify({ exitCode: app.exitCode }),
-        },
-        "Subprocess output streams ended; waiting for restart or new output",
-      )
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      outputStreamsEmptyCount += 1
-      const outputStreamsEmptyMessage = "Process output streams have ended"
-      if (outputStreamsEmptyCount === 10) {
-        onProcessError(outputStreamsEmptyMessage)
-        break
-      }
-      continue
+      fatalErrorMessage = "Subprocess output streams ended"
+      break
     }
 
     const chunk = stdoutResult.value ?? stderrResult.value
@@ -389,37 +375,22 @@ export const startWebappServer = async ({
     const convertedMessage = convert.toHtml(decodedString)
     if (convertedMessage !== "") {
       lastMessage = convertedMessage
+      subscribers.forEach((send) => send(convertedMessage))
+    } else {
+      fatalErrorMessage = "Process is returning an empty string"
+      break
     }
-    if (convertedMessage === "") {
-      emptyStringCount += 1
-      const emptyStringMessage = "Process is returning an empty string"
-      if (emptyStringCount === 10) {
-        onProcessError(emptyStringMessage)
-        break
-      }
-      subscribers.forEach((send) =>
-        send(
-          "Process is returning an empty string. This was the last non-empty message:\n\n" +
-            lastMessage,
-        ),
-      )
-      logger.fatal(
-        {
-          emoji: "💀",
-          additionalDetails: JSON.stringify({
-            exitCode: getSubprocesses().app.exitCode,
-          }),
-        },
-        emptyStringMessage,
-      )
-      await new Promise((resolve) => setTimeout(resolve, 1000))
-      continue
-    }
-    emptyStringCount = 0
-    subscribers.forEach((send) => send(convertedMessage))
   }
 
-  return server
+  subscribers.forEach((send) =>
+    send(
+      "Fatal error occured. This was the last non-empty message:\n\n" +
+        lastMessage,
+    ),
+  )
+
+  logger.warn({ emoji: "💀" }, fatalErrorMessage)
+  onProcessError(fatalErrorMessage)
 }
 
 export type WebServer = Awaited<ReturnType<typeof startWebappServer>>
