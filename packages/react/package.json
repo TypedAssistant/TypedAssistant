@@ -54,6 +54,11 @@
     "lodash": "^4.17.21",
     "react": "^19.2.3"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typedassistant/typedassistant.git",
+    "directory": "packages/react"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

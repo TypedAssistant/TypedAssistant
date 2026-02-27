@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "build": "turbo build --filter=!@typed-assistant/template",
-    "ci:publish": "pnpm publish -r --no-git-checks",
+    "ci:publish": "pnpm publish -r --no-git-checks --provenance",
     "dev": "turbo dev",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "gen:types": "turbo gen:types",

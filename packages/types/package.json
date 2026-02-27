@@ -25,6 +25,11 @@
   "peerDependencies": {
     "home-assistant-js-websocket": "^8.2.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typedassistant/typedassistant.git",
+    "directory": "packages/types"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

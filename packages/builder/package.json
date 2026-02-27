@@ -36,6 +36,11 @@
     "ts-toolbelt": "^9.6.0",
     "typescript": "^5.4.0"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typedassistant/typedassistant.git",
+    "directory": "packages/builder"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"

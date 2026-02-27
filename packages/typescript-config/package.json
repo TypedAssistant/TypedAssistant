@@ -2,6 +2,11 @@
   "name": "@typed-assistant/typescript-config",
   "version": "0.0.11",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/typedassistant/typedassistant.git",
+    "directory": "packages/typescript-config"
+  },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
