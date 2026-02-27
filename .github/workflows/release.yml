@@ -26,7 +26,7 @@ jobs:
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
       - name: Install latest npm
-        run: npm i npm@latest -g
+        run: sudo npm i npm@latest -g
       - name: Echo npm version
         run: npm --version
       - name: install pnpm
