@@ -25,7 +25,7 @@ const cssOutputFile = join(
   `./build/output.css`,
 ) as `${string}/output.css`
 
-const convert = new Convert()
+const convert = new Convert({ escapeXML: true })
 const decoder = new TextDecoder()
 
 const readers = {

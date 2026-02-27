@@ -1,5 +1,15 @@
 # @typed-assistant/template
 
+## 0.0.110
+
+### Patch Changes
+
+- Updated dependencies
+  - @typed-assistant/builder@0.0.91
+  - @typed-assistant/connection@0.0.31
+  - @typed-assistant/utils@0.0.21
+  - @typed-assistant/react@0.0.49
+
 ## 0.0.109
 
 ### Patch Changes

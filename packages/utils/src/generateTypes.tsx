@@ -109,7 +109,7 @@ export type GeneratedServices = {
                                 `"${
                                   typeof item === "string"
                                     ? item
-                                    : item?.value ?? ""
+                                    : (item?.value ?? "")
                                 }"`,
                             )
                             .join("|")
@@ -244,9 +244,9 @@ const readdirMany = async (
 
   if (error || !data) {
     if (currentIndex === paths.length - 1) {
-      return { error: [...errors, error as Error] }
+      return { error: [...errors, error] }
     }
-    return readdirMany(paths, currentIndex + 1, [...errors, error as Error])
+    return readdirMany(paths, currentIndex + 1, [...errors, error])
   }
 
   return { data }

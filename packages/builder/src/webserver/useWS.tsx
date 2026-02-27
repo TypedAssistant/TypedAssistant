@@ -12,12 +12,19 @@ export function useWS({
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>
+    let retryCount = 0
+
+    ws.ws.onopen = function () {
+      retryCount = 0
+    }
 
     ws.ws.onclose = function () {
+      const delay = Math.min(1000 * 2 ** retryCount, 30000)
+      retryCount++
       timeout = setTimeout(() => {
         if (ws.ws.readyState === WebSocket.OPEN) return
         setWS(subscribe)
-      }, 1000)
+      }, delay)
     }
 
     ws.ws.onmessage = function (event) {

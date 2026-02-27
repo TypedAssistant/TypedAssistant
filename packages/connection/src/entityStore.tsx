@@ -2,16 +2,15 @@ import type { HassEntities, HassEntity } from "home-assistant-js-websocket"
 import { connection } from "./global"
 import type { EntityId } from "@typed-assistant/types"
 
-let listeners: ((
-  entities: HassEntities,
-  prevEntities: HassEntities,
-) => void)[] = []
+let listeners = new Set<
+  (entities: HassEntities, prevEntities: HassEntities) => void
+>()
 let entities: HassEntities = {}
 
 function emitChange(newEntities: HassEntities) {
   const oldEntities = entities
   entities = newEntities
-  for (let listener of listeners) {
+  for (const listener of listeners) {
     listener(newEntities, oldEntities)
   }
 }
@@ -19,9 +18,9 @@ function emitChange(newEntities: HassEntities) {
 const addListener = (
   listener: (entities: HassEntities, prevEntities: HassEntities) => void,
 ) => {
-  listeners = [...listeners, listener]
+  listeners.add(listener)
   return () => {
-    listeners = listeners.filter((l) => l !== listener)
+    listeners.delete(listener)
   }
 }
 

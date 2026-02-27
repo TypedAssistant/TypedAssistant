@@ -5,7 +5,8 @@ export function withErrorHandling<TArgs extends unknown[], TReturn>(
     try {
       return { data: await fn(...args), error: undefined }
     } catch (error) {
-      return { data: undefined, error: error as Error }
+      const err = error instanceof Error ? error : new Error(String(error))
+      return { data: undefined, error: err }
     }
   }
 }

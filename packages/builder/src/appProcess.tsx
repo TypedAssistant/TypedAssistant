@@ -151,7 +151,8 @@ const checkProcesses = (
   const interval = setInterval(async () => {
     const ps = await $`ps -f`.text()
     logger.debug({ emoji: "🔍" }, `Checking processes...\n${ps}`)
-    const matches = ps.match(new RegExp(`bun .+${entryFile}`, "gmi")) ?? []
+    const escapedEntryFile = entryFile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    const matches = ps.match(new RegExp(`bun .+${escapedEntryFile}`, "gmi")) ?? []
 
     if (matches.length > 1) {
       multipleProcessesErrorCount++
@@ -208,9 +209,13 @@ const setupGitSync = async ({
   return setupGitPoller({ onChangesPulled })
 }
 
-const ig = ignore().add(
-  `${readFileSync(join(process.cwd(), ".gitignore")).toString()}\n.git`,
-)
+let gitignoreContent = ".git"
+try {
+  gitignoreContent = `${readFileSync(join(process.cwd(), ".gitignore")).toString()}\n.git`
+} catch {
+  logger.warn({ emoji: "⚠️" }, "No .gitignore found, watching all files")
+}
+const ig = ignore().add(gitignoreContent)
 const shouldIgnoreFileOrFolder = (filename: string) =>
   ig.ignores(relative(process.cwd(), filename))
 
