@@ -25,6 +25,8 @@ jobs:
         uses: actions/checkout@v4
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
+      - name: Echo npm version
+        run: npm --version
       - name: install pnpm
         run: npm i pnpm@latest -g
       - name: setup pnpm config
