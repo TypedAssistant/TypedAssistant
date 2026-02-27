@@ -1,5 +1,13 @@
 # @typed-assistant/connection
 
+## 0.0.30
+
+### Patch Changes
+
+- Use provenance flag to publish to npm.
+- Updated dependencies
+  - @typed-assistant/utils@0.0.20
+
 ## 0.0.29
 
 ### Patch Changes

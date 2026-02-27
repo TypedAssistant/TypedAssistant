@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/test-utils",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "exports": {
     "./HaConnectionMock": "./src/HaConnectionMock.tsx"
   },

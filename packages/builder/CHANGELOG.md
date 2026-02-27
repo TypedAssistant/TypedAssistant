@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.90
+
+### Patch Changes
+
+- Use provenance flag to publish to npm.
+
 ## 0.0.89
 
 ### Patch Changes

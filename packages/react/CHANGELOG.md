@@ -1,5 +1,14 @@
 # @typed-assistant/react
 
+## 0.0.48
+
+### Patch Changes
+
+- Use provenance flag to publish to npm.
+- Updated dependencies
+  - @typed-assistant/connection@0.0.30
+  - @typed-assistant/utils@0.0.20
+
 ## 0.0.47
 
 ### Patch Changes

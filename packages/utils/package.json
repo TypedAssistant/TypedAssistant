@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/utils",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "exports": {
     "./callService": "./src/callService.tsx",
     "./durations": "./src/durations.tsx",

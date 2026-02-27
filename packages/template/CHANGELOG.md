@@ -1,5 +1,18 @@
 # @typed-assistant/template
 
+## 0.0.109
+
+### Patch Changes
+
+- Use provenance flag to publish to npm.
+- Updated dependencies
+  - @typed-assistant/builder@0.0.90
+  - @typed-assistant/connection@0.0.30
+  - @typed-assistant/logger@0.0.23
+  - @typed-assistant/react@0.0.48
+  - @typed-assistant/types@0.0.30
+  - @typed-assistant/utils@0.0.20
+
 ## 0.0.108
 
 ### Patch Changes
