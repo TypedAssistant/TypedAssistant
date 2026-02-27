@@ -68,7 +68,7 @@ if [[ -n "$GITHUB_TOKEN_FROM_CONFIG" && -n "$GITHUB_USERNAME_FROM_CONFIG" && -n 
         git reset --hard "origin/$GITHUB_BRANCH_FROM_CONFIG"
         cd -
     fi
-    
+
     rm -rf /config/TypedAssistantBackup
 fi
 

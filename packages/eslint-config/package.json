@@ -1,26 +1,26 @@
 {
   "name": "@typed-assistant/eslint-config",
   "version": "0.0.11",
-  "exports": {
-    ".": "./index.js"
-  },
-  "dependencies": {
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "eslint-config-turbo": "^1.11.3",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-only-warn": "^1.1.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/parser": "^6.17.0",
-    "typescript": "^5.4.0"
-  },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
     "directory": "packages/eslint-config"
+  },
+  "exports": {
+    ".": "./index.js"
   },
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
+  },
+  "dependencies": {
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-config-turbo": "^1.11.3",
+    "eslint-plugin-only-warn": "^1.1.0",
+    "eslint-plugin-react-hooks": "^4.6.0"
+  },
+  "devDependencies": {
+    "@typescript-eslint/parser": "^6.17.0",
+    "typescript": "^5.4.0"
   }
 }

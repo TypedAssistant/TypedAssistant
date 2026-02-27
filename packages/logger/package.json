@@ -1,9 +1,18 @@
 {
   "name": "@typed-assistant/logger",
   "version": "0.0.23",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
+    "directory": "packages/logger"
+  },
   "exports": {
     ".": "./src/logger.tsx",
     "./levels": "./src/levels.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint ."
@@ -21,14 +30,5 @@
     "bun-types": "^1.0.2",
     "eslint": "^8.56.0",
     "typescript": "^5.4.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
-    "directory": "packages/logger"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

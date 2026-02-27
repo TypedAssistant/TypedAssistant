@@ -4,7 +4,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
     "directory": "packages/typescript-config"
   },
   "publishConfig": {

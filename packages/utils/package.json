@@ -1,6 +1,11 @@
 {
   "name": "@typed-assistant/utils",
   "version": "0.0.20",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
+    "directory": "packages/utils"
+  },
   "exports": {
     "./callService": "./src/callService.tsx",
     "./durations": "./src/durations.tsx",
@@ -9,6 +14,10 @@
     "./getPrettyTimestamp": "./src/getPrettyTimestamp.tsx",
     "./notify": "./src/notify.tsx",
     "./withErrorHandling": "./src/withErrorHandling.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint ."
@@ -32,14 +41,5 @@
   "peerDependencies": {
     "@typed-assistant/logger": "workspace:*",
     "home-assistant-js-websocket": "^8.2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
-    "directory": "packages/utils"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

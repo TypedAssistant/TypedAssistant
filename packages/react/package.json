@@ -1,6 +1,11 @@
 {
   "name": "@typed-assistant/react",
   "version": "0.0.48",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
+    "directory": "packages/react"
+  },
   "exports": {
     "./Status": "./src/Status.tsx",
     "./EntityStateChangeListener": "./src/EntityStateChangeListener.tsx",
@@ -8,6 +13,10 @@
     "./useEntity": "./src/useEntity.tsx",
     "./useOnEntityStateChange": "./src/useOnEntityStateChange.tsx",
     "./useSchedule": "./src/useSchedule.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint .",
@@ -53,14 +62,5 @@
     "ink": "^6.5.1",
     "lodash": "^4.17.21",
     "react": "^19.2.3"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
-    "directory": "packages/react"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

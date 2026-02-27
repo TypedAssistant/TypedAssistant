@@ -1,8 +1,17 @@
 {
   "name": "@typed-assistant/test-utils",
   "version": "0.0.15",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
+    "directory": "packages/test-utils"
+  },
   "exports": {
     "./HaConnectionMock": "./src/HaConnectionMock.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint ."
@@ -16,14 +25,5 @@
   },
   "peerDependencies": {
     "home-assistant-js-websocket": "^8.2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
-    "directory": "packages/test-utils"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

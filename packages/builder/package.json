@@ -1,10 +1,19 @@
 {
   "name": "@typed-assistant/builder",
   "version": "0.0.90",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
+    "directory": "packages/builder"
+  },
   "exports": {
     "./appProcess": "./src/appProcess.tsx",
     "./bunInstall": "./src/bunInstall.tsx",
     "./pullChanges": "./src/pullChanges.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint ."
@@ -35,14 +44,5 @@
     "eslint-plugin-html": "^7.1.0",
     "ts-toolbelt": "^9.6.0",
     "typescript": "^5.4.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
-    "directory": "packages/builder"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

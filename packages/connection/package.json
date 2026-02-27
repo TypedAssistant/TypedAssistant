@@ -1,10 +1,19 @@
 {
   "name": "@typed-assistant/connection",
   "version": "0.0.30",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
+    "directory": "packages/connection"
+  },
   "exports": {
     ".": "./src/index.tsx",
     "./entityStore": "./src/entityStore.tsx",
     "./global": "./src/global.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint ."
@@ -27,14 +36,5 @@
   },
   "peerDependencies": {
     "@typed-assistant/utils": "workspace:*"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
-    "directory": "packages/connection"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }

@@ -1,9 +1,18 @@
 {
   "name": "@typed-assistant/types",
   "version": "0.0.30",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",
+    "directory": "packages/types"
+  },
   "exports": {
     ".": "./src/type-register.tsx",
     "./misc-types": "./src/misc-types.tsx"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "scripts": {
     "lint": "tsc --noEmit && eslint ."
@@ -24,14 +33,5 @@
   },
   "peerDependencies": {
     "home-assistant-js-websocket": "^8.2.0"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/typedassistant/typedassistant.git",
-    "directory": "packages/types"
-  },
-  "publishConfig": {
-    "access": "public",
-    "registry": "https://registry.npmjs.org/"
   }
 }
