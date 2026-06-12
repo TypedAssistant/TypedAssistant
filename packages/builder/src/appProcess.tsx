@@ -1,4 +1,5 @@
 import { logger } from "@typed-assistant/logger"
+import { ONE_SECOND } from "@typed-assistant/utils/durations"
 import { generateTypes } from "@typed-assistant/utils/generateTypes"
 import type { Subprocess } from "bun"
 import { $ } from "bun"
@@ -62,11 +63,11 @@ export async function setup({
   })
 
   checkProcesses(entryFile, {
-    onMultiProcessError: (ps) => {
+    onMultiProcessError: async (ps) => {
       const message = `Multiple processes detected. Restarting addon...`
       logger.fatal({ additionalDetails: ps, emoji: "🚨" }, message)
       onProcessError?.(message, addonUrl)
-      restartAddon()
+      await restartAddon()
     },
     onNoProcessError: async (ps) => {
       const message = `No processes detected. Restarting app...`
@@ -113,26 +114,40 @@ async function startApp(appSourceFile: string) {
 }
 
 let settingUp = { current: false }
+let restartQueued = false
 async function killAndRestartApp(
   entryFile: string,
   options: Parameters<typeof buildAndStartAppProcess>[1],
   subprocesses: Processes,
 ) {
-  if (settingUp.current) return subprocesses
-  logger.fatal({ emoji: "♻️" }, "Restarting app...")
-  settingUp.current = true
-  try {
-    if (subprocesses.app) await killSubprocess(subprocesses.app)
-    return await buildAndStartAppProcess(entryFile, options)
-  } catch (error) {
-    logger.error(
-      {
-        additionalDetails: error instanceof Error ? error.message : `${error}`,
-        emoji: "🚨",
-      },
-      "Failed to restart app",
-    )
+  if (settingUp.current) {
+    // Re-run once the in-flight restart finishes so this request isn't lost
+    restartQueued = true
+    logger.info({ emoji: "♻️" }, "Restart already in progress. Queuing...")
     return subprocesses
+  }
+  settingUp.current = true
+  let currentSubprocesses = subprocesses
+  try {
+    do {
+      restartQueued = false
+      logger.fatal({ emoji: "♻️" }, "Restarting app...")
+      try {
+        if (currentSubprocesses.app)
+          await killSubprocess(currentSubprocesses.app)
+        currentSubprocesses = await buildAndStartAppProcess(entryFile, options)
+      } catch (error) {
+        logger.error(
+          {
+            additionalDetails:
+              error instanceof Error ? error.message : `${error}`,
+            emoji: "🚨",
+          },
+          "Failed to restart app",
+        )
+      }
+    } while (restartQueued)
+    return currentSubprocesses
   } finally {
     settingUp.current = false
   }
@@ -151,6 +166,21 @@ const checkProcesses = (
   },
 ) => {
   const interval = setInterval(async () => {
+    try {
+      await checkOnce()
+    } catch (error) {
+      logger.error(
+        {
+          additionalDetails:
+            error instanceof Error ? error.message : `${error}`,
+          emoji: "🚨",
+        },
+        "Process check failed",
+      )
+    }
+  }, 10000)
+
+  async function checkOnce() {
     const ps = await $`ps -f`.text()
     logger.debug({ emoji: "🔍" }, `Checking processes...\n${ps}`)
     const escapedEntryFile = entryFile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
@@ -159,6 +189,8 @@ const checkProcesses = (
     if (matches.length > 1) {
       multipleProcessesErrorCount++
       if (multipleProcessesErrorCount > 5) {
+        // Reset so a failed recovery gets a fresh window instead of refiring every tick
+        multipleProcessesErrorCount = 0
         await onMultiProcessError?.(ps)
         return
       }
@@ -169,13 +201,14 @@ const checkProcesses = (
     if (matches.length === 0) {
       noProcessesErrorCount++
       if (noProcessesErrorCount > 5) {
+        noProcessesErrorCount = 0
         await onNoProcessError?.(ps)
         return
       }
     } else {
       noProcessesErrorCount = 0
     }
-  }, 10000)
+  }
 
   return { stop: () => clearInterval(interval) }
 }
@@ -264,15 +297,18 @@ function setupWatcher({
   return watcher
 }
 
-process.on("SIGINT", async () => {
+let shuttingDown = false
+async function shutdown() {
+  if (shuttingDown) return
+  shuttingDown = true
   logger.fatal({ emoji: "👋" }, "Exiting...")
+  setTimeout(() => {
+    logger.error({ emoji: "🚨" }, "Cleanup timed out. Forcing exit...")
+    process.exit(1)
+  }, 15 * ONE_SECOND)
   await callSoftKillListeners()
   await callKillListeners()
   process.exit(0)
-})
-process.on("SIGTERM", async () => {
-  logger.fatal({ emoji: "👋" }, "Exiting...")
-  await callSoftKillListeners()
-  await callKillListeners()
-  process.exit(0)
-})
+}
+process.on("SIGINT", shutdown)
+process.on("SIGTERM", shutdown)

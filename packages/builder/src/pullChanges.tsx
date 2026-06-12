@@ -2,6 +2,8 @@ import { logger } from "@typed-assistant/logger"
 import { $ } from "bun"
 import { bunInstall } from "./bunInstall"
 
+let installPending = false
+
 export const pullChanges = async ({
   onChangesPulled,
 }: {
@@ -19,16 +21,25 @@ export const pullChanges = async ({
   const gitPullText = stdout.toString()
   const packageJSONUpdated = /package.json/.test(gitPullText)
   const nothingNew = /Already up to date./.test(gitPullText)
-  if (nothingNew) {
+  if (nothingNew && !installPending) {
     logger.debug({ emoji: "⬇️👌" }, "No new changes.")
     return {}
-  } else {
-    if (packageJSONUpdated) {
-      logger.info({ emoji: "⬇️📦" }, "package.json updated.")
-      await bunInstall()
-    }
-    logger.info({ emoji: "⬇️🆕" }, "Changes pulled.")
-    onChangesPulled()
   }
+  if (packageJSONUpdated || installPending) {
+    logger.info({ emoji: "⬇️📦" }, "package.json updated. Installing...")
+    const { success } = await bunInstall()
+    if (!success) {
+      // Don't restart the app against a stale or half-written node_modules
+      installPending = true
+      logger.error(
+        { emoji: "⬇️🚨" },
+        "Skipping app restart because bun install failed. Retrying on next poll.",
+      )
+      return {}
+    }
+    installPending = false
+  }
+  logger.info({ emoji: "⬇️🆕" }, "Changes pulled.")
+  onChangesPulled()
   return {}
 }

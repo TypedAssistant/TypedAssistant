@@ -1,5 +1,19 @@
 # @typed-assistant/builder
 
+## 0.0.93
+
+### Patch Changes
+
+- More process lifecycle and webserver fixes
+
+  - Skip the app restart when `bun install` fails after a pull, and retry the install on the next poll instead of restarting against stale node_modules
+  - Queue a restart requested while another restart is in flight instead of silently dropping it
+  - Fix `/force-sync-with-github` throwing instead of reporting failure (Bun `# @typed-assistant/builder throws on non-zero exit without `.nothrow()`), and fail clearly when `GITHUB_BRANCH` is unset
+  - Remove the unfinished `/webhook` endpoint
+  - Reset process watchdog counters after firing so failed recoveries get a fresh window instead of refiring every 10 seconds, and stop watchdog errors becoming unhandled rejections
+  - Force exit if shutdown cleanup hangs for more than 15 seconds, and ignore duplicate SIGINT/SIGTERM
+  - Flush the text decoder when app output streams end so partial multi-byte characters aren't lost
+
 ## 0.0.92
 
 ### Patch Changes

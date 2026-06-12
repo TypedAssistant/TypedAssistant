@@ -129,12 +129,27 @@ export const startWebappServer = async ({
     })
     .get("/restart-addon", async () => {
       await killSubprocess(getSubprocesses().app)
-      restartAddon()
+      restartAddon().catch((error) => {
+        logger.error(
+          {
+            additionalDetails:
+              error instanceof Error ? error.message : `${error}`,
+            emoji: "🚨",
+          },
+          "Failed to restart addon",
+        )
+      })
       return { message: "Restarting addon..." }
     })
     .get("/force-sync-with-github", async () => {
+      if (!process.env.GITHUB_BRANCH) {
+        logger.error({ emoji: "🔄🚨" }, "GITHUB_BRANCH is not set")
+        return { message: "GITHUB_BRANCH is not set" }
+      }
       const { exitCode, stderr } =
-        await $`git reset --hard origin/${process.env.GITHUB_BRANCH}`.quiet()
+        await $`git reset --hard origin/${process.env.GITHUB_BRANCH}`
+          .nothrow()
+          .quiet()
       if (exitCode) {
         logger.error(
           {
@@ -150,18 +165,6 @@ export const startWebappServer = async ({
       logger.info({ emoji: "🔄" }, "Reset to origin")
       return { message: "Reset to origin" }
     })
-    .get(
-      "/webhook",
-      async ({ query }) => {
-        if (query.check === "true") return { message: "Set up successfully" }
-        return { message: "Restarting addon..." }
-      },
-      {
-        query: t.Object({
-          check: t.Optional(t.Literal("true")),
-        }),
-      },
-    )
     .get("/addon-info", async () => {
       const { data, error } = await getAddonInfo()
 
@@ -334,13 +337,16 @@ const streamAppOutputToSubscribers = async (
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const { done, value } = await reader.read()
+        // A final decode() flushes any buffered partial multi-byte character
+        const text = done
+          ? decoder.decode()
+          : decoder.decode(value, { stream: true })
+        const convertedMessage = convert.toHtml(text)
+        if (convertedMessage !== "") {
+          lastMessage = convertedMessage
+          subscribers.forEach((send) => send(convertedMessage))
+        }
         if (done) break
-        const convertedMessage = convert.toHtml(
-          decoder.decode(value, { stream: true }),
-        )
-        if (convertedMessage === "") continue
-        lastMessage = convertedMessage
-        subscribers.forEach((send) => send(convertedMessage))
       }
     } finally {
       reader.releaseLock()
