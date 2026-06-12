@@ -30,7 +30,7 @@ jobs:
       - name: Echo npm version
         run: npm --version
       - name: install pnpm
-        run: npm i pnpm@latest -g
+        run: npm i pnpm@10 -g
       - name: setup pnpm config
         run: pnpm config set store-dir $PNPM_CACHE_FOLDER
       - name: install dependencies
