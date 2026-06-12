@@ -1,5 +1,18 @@
 # @typed-assistant/builder
 
+## 0.0.92
+
+### Patch Changes
+
+- Fix subprocess lifecycle issues
+
+  - Fix restarts getting permanently stuck if a rebuild failed mid-restart
+  - Fix intentional app restarts being treated as fatal errors by the webserver's output streaming, which leaked servers/watchers and double-spawned app processes
+  - Fix orphaned app subprocess when the addon received SIGTERM/SIGINT
+  - Fix potential deadlock by draining stdout and stderr concurrently (stderr also now streams to the web UI live)
+  - Escalate to SIGKILL if a subprocess ignores SIGTERM for 10 seconds
+  - Skip ANSI-only output chunks instead of treating them as a fatal error
+
 ## 0.0.91
 
 ### Patch Changes

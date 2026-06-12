@@ -12,6 +12,7 @@ import {
   callKillListeners,
   callSoftKillListeners,
   killSubprocess,
+  terminateSubprocess,
 } from "./killProcess"
 import { restartAddon } from "./restartAddon"
 import { setupGitPoller } from "./setupGitPoller"
@@ -35,7 +36,11 @@ export async function setup({
     mdiPaths: mdiPaths,
   })
 
-  startWebappServer({
+  addKillListener(async () => {
+    await terminateSubprocess(subprocesses.app)
+  })
+
+  await startWebappServer({
     basePath,
     getSubprocesses: () => subprocesses,
     onRestartAppRequest: async () => {
@@ -45,22 +50,8 @@ export async function setup({
         subprocesses,
       )
     },
-    onProcessError: async (message) => {
-      const messageAll = `${message}. Restarting app...`
-      logger.fatal({ emoji: "🚨" }, messageAll)
-      onProcessError?.(messageAll, addonUrl)
-      if (subprocesses.app) await killSubprocess(subprocesses.app)
-      if (watcher) watcher.close()
-      if (processChecker) processChecker.stop()
-      if ("stop" in gitPoller) gitPoller.stop()
-      setup({
-        entryFile,
-        mdiPaths,
-        onProcessError,
-      })
-    },
   })
-  const watcher = setupWatcher({
+  setupWatcher({
     directoryToWatch,
     entryFile,
     mdiPaths,
@@ -70,7 +61,7 @@ export async function setup({
     getSubprocesses: () => subprocesses,
   })
 
-  const processChecker = checkProcesses(entryFile, {
+  checkProcesses(entryFile, {
     onMultiProcessError: (ps) => {
       const message = `Multiple processes detected. Restarting addon...`
       logger.fatal({ additionalDetails: ps, emoji: "🚨" }, message)
@@ -89,7 +80,7 @@ export async function setup({
     },
   })
 
-  const gitPoller = await setupGitSync({
+  await setupGitSync({
     onChangesPulled: async () => {
       subprocesses = await killAndRestartApp(
         entryFile,
@@ -130,10 +121,21 @@ async function killAndRestartApp(
   if (settingUp.current) return subprocesses
   logger.fatal({ emoji: "♻️" }, "Restarting app...")
   settingUp.current = true
-  if (subprocesses.app) await killSubprocess(subprocesses.app)
-  const newSubprocesses = await buildAndStartAppProcess(entryFile, options)
-  settingUp.current = false
-  return newSubprocesses
+  try {
+    if (subprocesses.app) await killSubprocess(subprocesses.app)
+    return await buildAndStartAppProcess(entryFile, options)
+  } catch (error) {
+    logger.error(
+      {
+        additionalDetails: error instanceof Error ? error.message : `${error}`,
+        emoji: "🚨",
+      },
+      "Failed to restart app",
+    )
+    return subprocesses
+  } finally {
+    settingUp.current = false
+  }
 }
 
 let multipleProcessesErrorCount = 0

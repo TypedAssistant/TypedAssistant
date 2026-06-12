@@ -26,33 +26,6 @@ const cssOutputFile = join(
 ) as `${string}/output.css`
 
 const convert = new Convert({ escapeXML: true })
-const decoder = new TextDecoder()
-
-const readers = {
-  stdout: new Map<
-    ReadableStream<Uint8Array>,
-    ReadableStreamDefaultReader<Uint8Array>
-  >(),
-  stderr: new Map<
-    ReadableStream<Uint8Array>,
-    ReadableStreamDefaultReader<Uint8Array>
-  >(),
-}
-
-const getReader = (
-  type: "stdout" | "stderr",
-  stream: ReadableStream<Uint8Array>,
-) => {
-  const cachedReader = readers[type].get(stream)
-  if (!cachedReader) {
-    readers[type].forEach((_reader, cachedStream) => {
-      readers[type].delete(cachedStream)
-    })
-  }
-  const reader = cachedReader ?? stream.getReader()
-  readers[type].set(stream, reader)
-  return reader
-}
 
 const subscribers = new Map<string, (message: string) => void>()
 const logSubscribers = new Map<string, () => void>()
@@ -101,14 +74,12 @@ export const startWebappServer = async ({
   basePath,
   getSubprocesses,
   onRestartAppRequest,
-  onProcessError,
 }: {
   basePath: string
   getSubprocesses: () => {
     app: Subprocess<"ignore", "pipe", "pipe">
   }
   onRestartAppRequest: () => void
-  onProcessError: (message: string) => void
 }) => {
   const buildResult = await Bun.build({
     entrypoints: [tsEntryPoint],
@@ -346,51 +317,66 @@ export const startWebappServer = async ({
     await server.stop()
   })
 
-  let fatalErrorMessage = ""
+  streamAppOutputToSubscribers(getSubprocesses)
 
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const app = getSubprocesses().app
-    const stdoutReader = getReader("stdout", app.stdout)
-    const stderrReader = getReader("stderr", app.stderr)
-    const stdoutResult = await stdoutReader.read()
-    const stderrResult =
-      stdoutResult.value === undefined
-        ? await stderrReader.read()
-        : ({
-            value: undefined,
-            done: true,
-          } satisfies ReadableStreamDefaultReadDoneResult)
+  return server
+}
 
-    const streamEnded =
-      stdoutResult.done &&
-      (stderrResult.done || stderrResult.value === undefined)
-    if (streamEnded) {
-      fatalErrorMessage = "Subprocess output streams ended"
-      break
-    }
-
-    const chunk = stdoutResult.value ?? stderrResult.value
-    const decodedString = chunk ? decoder.decode(chunk) : ""
-    const convertedMessage = convert.toHtml(decodedString)
-    if (convertedMessage !== "") {
-      lastMessage = convertedMessage
-      subscribers.forEach((send) => send(convertedMessage))
-    } else {
-      fatalErrorMessage = "Process is returning an empty string"
-      break
+const streamAppOutputToSubscribers = async (
+  getSubprocesses: () => {
+    app: Subprocess<"ignore", "pipe", "pipe">
+  },
+) => {
+  const pumpStream = async (stream: ReadableStream<Uint8Array>) => {
+    const reader = stream.getReader()
+    const decoder = new TextDecoder()
+    try {
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const { done, value } = await reader.read()
+        if (done) break
+        const convertedMessage = convert.toHtml(
+          decoder.decode(value, { stream: true }),
+        )
+        if (convertedMessage === "") continue
+        lastMessage = convertedMessage
+        subscribers.forEach((send) => send(convertedMessage))
+      }
+    } finally {
+      reader.releaseLock()
     }
   }
 
-  subscribers.forEach((send) =>
-    send(
-      "Fatal error occured. This was the last non-empty message:\n\n" +
-        lastMessage,
-    ),
-  )
-
-  logger.warn({ emoji: "💀" }, fatalErrorMessage)
-  onProcessError(fatalErrorMessage)
+  let currentApp: Subprocess<"ignore", "pipe", "pipe"> | null = null
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const app = getSubprocesses().app
+    if (app === currentApp) {
+      // This app's streams have ended; wait for a replacement to be spawned
+      await new Promise((resolve) => setTimeout(resolve, ONE_SECOND))
+      continue
+    }
+    currentApp = app
+    await Promise.all([pumpStream(app.stdout), pumpStream(app.stderr)]).catch(
+      (error) => {
+        logger.error(
+          {
+            additionalDetails:
+              error instanceof Error ? error.message : `${error}`,
+            emoji: "🚨",
+          },
+          "Error reading app process output",
+        )
+      },
+    )
+    logger.warn({ emoji: "💀" }, "App process output streams ended")
+    subscribers.forEach((send) =>
+      send(
+        "App process exited. Waiting for it to restart...\n\nThis was the last message:\n\n" +
+          lastMessage,
+      ),
+    )
+  }
 }
 
 export type WebServer = Awaited<ReturnType<typeof startWebappServer>>

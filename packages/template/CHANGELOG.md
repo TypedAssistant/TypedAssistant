@@ -1,5 +1,12 @@
 # @typed-assistant/template
 
+## 0.0.111
+
+### Patch Changes
+
+- Updated dependencies
+  - @typed-assistant/builder@0.0.92
+
 ## 0.0.110
 
 ### Patch Changes

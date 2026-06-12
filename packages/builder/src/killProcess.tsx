@@ -1,4 +1,5 @@
 import { logger } from "@typed-assistant/logger"
+import { ONE_SECOND } from "@typed-assistant/utils/durations"
 import type { Subprocess } from "bun"
 
 const killListeners: (() => void | Promise<void>)[] = []
@@ -19,9 +20,21 @@ export async function callSoftKillListeners() {
   await Promise.all(softKillListeners.map((listener) => listener()))
 }
 
-export async function killSubprocess(subprocess: Subprocess) {
+export async function terminateSubprocess(subprocess: Subprocess) {
   logger.fatal({ emoji: "💀" }, `Killing process: ${subprocess.pid}`)
-  await callSoftKillListeners()
   subprocess.kill()
+  const sigkillTimeout = setTimeout(() => {
+    logger.warn(
+      { emoji: "💀" },
+      `Process ${subprocess.pid} did not exit after SIGTERM. Sending SIGKILL...`,
+    )
+    subprocess.kill("SIGKILL")
+  }, 10 * ONE_SECOND)
   await subprocess.exited
+  clearTimeout(sigkillTimeout)
+}
+
+export async function killSubprocess(subprocess: Subprocess) {
+  await callSoftKillListeners()
+  await terminateSubprocess(subprocess)
 }
