@@ -1,5 +1,10 @@
 # @typed-assistant/builder
 
+## Unreleased
+
+- Detect an exited app from its tracked subprocess handle instead of a fragile
+  `ps` command-line match, and log its exit code, signal, and resource usage.
+
 ## 0.0.93
 
 ### Patch Changes
