@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.94
+
+### Patch Changes
+
+- Improve app subprocess exit detection and diagnostics
+
 ## 0.0.93
 
 ### Patch Changes

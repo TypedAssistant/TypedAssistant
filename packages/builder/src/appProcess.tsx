@@ -62,16 +62,16 @@ export async function setup({
     getSubprocesses: () => subprocesses,
   })
 
-  checkProcesses(entryFile, {
+  checkProcesses(entryFile, () => subprocesses, {
     onMultiProcessError: async (ps) => {
       const message = `Multiple processes detected. Restarting addon...`
       logger.fatal({ additionalDetails: ps, emoji: "🚨" }, message)
       onProcessError?.(message, addonUrl)
       await restartAddon()
     },
-    onNoProcessError: async (ps) => {
-      const message = `No processes detected. Restarting app...`
-      logger.fatal({ additionalDetails: ps, emoji: "🚨" }, message)
+    onNoProcessError: async (processDetails) => {
+      const message = `App process exited. Restarting app...`
+      logger.fatal({ additionalDetails: processDetails, emoji: "🚨" }, message)
       onProcessError?.(message, addonUrl)
       subprocesses = await killAndRestartApp(
         entryFile,
@@ -157,6 +157,7 @@ let multipleProcessesErrorCount = 0
 let noProcessesErrorCount = 0
 const checkProcesses = (
   entryFile: string,
+  getSubprocesses: () => Processes,
   {
     onMultiProcessError,
     onNoProcessError,
@@ -198,11 +199,23 @@ const checkProcesses = (
       multipleProcessesErrorCount = 0
     }
 
-    if (matches.length === 0) {
+    const app = getSubprocesses().app
+    const appExited = app.exitCode !== null || app.signalCode !== null
+
+    if (appExited) {
       noProcessesErrorCount++
       if (noProcessesErrorCount > 5) {
         noProcessesErrorCount = 0
-        await onNoProcessError?.(ps)
+        const resourceUsage = app.resourceUsage()
+        await onNoProcessError?.(
+          [
+            `Tracked app process ${app.pid} exited.`,
+            `Exit code: ${app.exitCode ?? "none"}`,
+            `Signal: ${app.signalCode ?? "none"}`,
+            `Resource usage: ${resourceUsage ? JSON.stringify(resourceUsage) : "unavailable"}`,
+            `Process table at detection:\n${ps}`,
+          ].join("\n"),
+        )
         return
       }
     } else {
