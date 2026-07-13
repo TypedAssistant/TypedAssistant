@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Lint and test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+      - name: Install pnpm
+        run: npm install --global pnpm@10.7.1
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+      - name: Lint and test
+        run: pnpm validate

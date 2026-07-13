@@ -28,7 +28,8 @@
   },
   "devDependencies": {
     "@happy-dom/global-registrator": "^12.9.1",
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "@typed-assistant/eslint-config": "workspace:*",
     "@typed-assistant/test-utils": "workspace:*",
     "@typed-assistant/typescript-config": "workspace:*",

@@ -33,7 +33,8 @@
     "use-deep-compare-effect": "^1.8.1"
   },
   "devDependencies": {
-    "@testing-library/react": "^14.1.2",
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/react": "^16.3.2",
     "@typed-assistant/connection": "workspace:*",
     "@typed-assistant/eslint-config": "workspace:*",
     "@typed-assistant/logger": "workspace:*",

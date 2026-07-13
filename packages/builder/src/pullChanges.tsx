@@ -7,7 +7,7 @@ let installPending = false
 export const pullChanges = async ({
   onChangesPulled,
 }: {
-  onChangesPulled: () => void
+  onChangesPulled: () => void | Promise<void>
 }) => {
   logger.debug({ emoji: "⬇️" }, "Pulling changes...")
   const { exitCode, stderr, stdout } = await $`git pull`.nothrow().quiet()
@@ -40,6 +40,6 @@ export const pullChanges = async ({
     installPending = false
   }
   logger.info({ emoji: "⬇️🆕" }, "Changes pulled.")
-  onChangesPulled()
+  await onChangesPulled()
   return {}
 }
