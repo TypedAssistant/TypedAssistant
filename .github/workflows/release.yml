@@ -2,11 +2,10 @@ name: Release
 
 env:
   CI: true
-  PNPM_CACHE_FOLDER: .pnpm-store
+  NPM_CONFIG_PROVENANCE: "true"
 
 permissions:
   contents: write
-  pull-requests: write
   id-token: write
 
 on:
@@ -27,16 +26,21 @@ jobs:
         uses: oven-sh/setup-bun@v1
       - name: install pnpm
         run: npm i pnpm@10.7.1 -g
-      - name: setup pnpm config
-        run: pnpm config set store-dir $PNPM_CACHE_FOLDER
       - name: install dependencies
         run: pnpm install --frozen-lockfile
       - name: lint and test
         run: pnpm validate
-      - name: create and publish versions
-        uses: changesets/action@v1
-        id: changesets
-        with:
-          publish: pnpm ci:publish
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: version packages
+        run: pnpm changeset version
+      - name: commit version changes
+        run: |
+          if [[ -z "$(git status --porcelain)" ]]; then
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add --all
+          git commit -m "Version packages [skip ci]"
+          git push
+      - name: publish packages
+        run: pnpm changeset publish
