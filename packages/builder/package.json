@@ -1,6 +1,6 @@
 {
   "name": "@typed-assistant/builder",
-  "version": "0.0.94",
+  "version": "0.0.95",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/TypedAssistant/TypedAssistant.git",

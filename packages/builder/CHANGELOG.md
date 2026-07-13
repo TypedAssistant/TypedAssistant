@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.95
+
+### Patch Changes
+
+- 796e2a0: Prevent Git and process health poll iterations from overlapping when an earlier iteration is still running.
+
 ## 0.0.94
 
 ### Patch Changes
