@@ -8,17 +8,42 @@ export const setupGitPoller = async ({
 }: {
   /** Duration in seconds */
   gitPullPollDuration?: number
-  onChangesPulled: () => void
+  onChangesPulled: () => void | Promise<void>
 }) => {
   const duration = gitPullPollDuration ?? 30
+  const delay = duration * ONE_SECOND
+  let stopped = false
+  let timeout: ReturnType<typeof setTimeout>
 
-  const interval = setInterval(async () => {
-    await pullChanges({ onChangesPulled })
-    logger.debug(
-      { emoji: "⬇️⏳" },
-      `Pulling changes again in ${duration} seconds...`,
-    )
-  }, duration * ONE_SECOND)
+  const poll = async () => {
+    try {
+      await pullChanges({ onChangesPulled })
+    } catch (error) {
+      logger.error(
+        {
+          additionalDetails:
+            error instanceof Error ? error.message : `${error}`,
+          emoji: "⬇️🚨",
+        },
+        "Git poll failed",
+      )
+    } finally {
+      if (!stopped) {
+        logger.debug(
+          { emoji: "⬇️⏳" },
+          `Pulling changes again in ${duration} seconds...`,
+        )
+        timeout = setTimeout(poll, delay)
+      }
+    }
+  }
 
-  return { stop: () => clearInterval(interval) }
+  timeout = setTimeout(poll, delay)
+
+  return {
+    stop: () => {
+      stopped = true
+      clearTimeout(timeout)
+    },
+  }
 }

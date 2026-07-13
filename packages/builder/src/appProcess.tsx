@@ -166,7 +166,10 @@ const checkProcesses = (
     onNoProcessError?: (psOutput: string) => void | Promise<void>
   },
 ) => {
-  const interval = setInterval(async () => {
+  let stopped = false
+  let timeout: ReturnType<typeof setTimeout>
+
+  const check = async () => {
     try {
       await checkOnce()
     } catch (error) {
@@ -178,14 +181,19 @@ const checkProcesses = (
         },
         "Process check failed",
       )
+    } finally {
+      if (!stopped) timeout = setTimeout(check, 10000)
     }
-  }, 10000)
+  }
+
+  timeout = setTimeout(check, 10000)
 
   async function checkOnce() {
     const ps = await $`ps -f`.text()
     logger.debug({ emoji: "🔍" }, `Checking processes...\n${ps}`)
-    const escapedEntryFile = entryFile.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-    const matches = ps.match(new RegExp(`bun .+${escapedEntryFile}`, "gmi")) ?? []
+    const escapedEntryFile = entryFile.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+    const matches =
+      ps.match(new RegExp(`bun .+${escapedEntryFile}`, "gmi")) ?? []
 
     if (matches.length > 1) {
       multipleProcessesErrorCount++
@@ -223,7 +231,12 @@ const checkProcesses = (
     }
   }
 
-  return { stop: () => clearInterval(interval) }
+  return {
+    stop: () => {
+      stopped = true
+      clearTimeout(timeout)
+    },
+  }
 }
 
 const getAddonInfo = async () => {

@@ -9,7 +9,8 @@
     "gen:types": "turbo gen:types",
     "lint": "turbo lint",
     "publish-packages": "turbo run build lint test --filter=!@typed-assistant/template && changeset version && changeset publish",
-    "test": "turbo test"
+    "test": "turbo test",
+    "validate": "turbo run lint test --filter=!@typed-assistant/template"
   },
   "dependencies": {
     "@changesets/cli": "^2.27.9",

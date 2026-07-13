@@ -260,7 +260,7 @@ test("useSchedule accepts days of week", async () => {
   expect(TestComponent).toHaveBeenCalledTimes(3)
 })
 
-test.only("useSchedule accepts days form an entity's state", async () => {
+test("useSchedule accepts days form an entity's state", async () => {
   vi.useFakeTimers()
   vi.setSystemTime(new Date("2021-01-01T00:00:00Z"))
   mocks.connection.setEntities({
