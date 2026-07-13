@@ -21,9 +21,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          package-manager-cache: false
       - name: Setup Bun
         uses: oven-sh/setup-bun@v1
+      - name: install npm
+        run: npm i npm@12.0.1 -g
       - name: install pnpm
         run: npm i pnpm@10.7.1 -g
       - name: install dependencies
