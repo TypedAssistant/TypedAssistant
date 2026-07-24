@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.96
+
+### Patch Changes
+
+- 51be37e: Fix web dashboard WebSocket reconnection, connection status, and terminal/log stream delivery.
+
 ## 0.0.95
 
 ### Patch Changes
