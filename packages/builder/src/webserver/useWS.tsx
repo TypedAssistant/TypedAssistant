@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import type { app } from "./api"
 
 export function useWS({
@@ -9,22 +9,33 @@ export function useWS({
   subscribe: () => ReturnType<(typeof app.ws | typeof app.logsws)["subscribe"]>
 }) {
   const [ws, setWS] = useState(subscribe)
+  const retryCount = useRef(0)
+  const [, renderConnectionState] = useState(0)
 
   useEffect(() => {
     let timeout: ReturnType<typeof setTimeout>
-    let retryCount = 0
+    let active = true
 
     ws.ws.onopen = function () {
-      retryCount = 0
+      retryCount.current = 0
+      renderConnectionState((revision) => revision + 1)
     }
 
     ws.ws.onclose = function () {
-      const delay = Math.min(1000 * 2 ** retryCount, 30000)
-      retryCount++
+      if (!active) return
+
+      renderConnectionState((revision) => revision + 1)
+      const delay = Math.min(1000 * 2 ** retryCount.current, 30000)
+      retryCount.current++
       timeout = setTimeout(() => {
-        if (ws.ws.readyState === WebSocket.OPEN) return
+        if (!active || ws.ws.readyState === WebSocket.OPEN) return
         setWS(subscribe)
       }, delay)
+    }
+
+    ws.ws.onerror = function () {
+      renderConnectionState((revision) => revision + 1)
+      ws.ws.close()
     }
 
     ws.ws.onmessage = function (event) {
@@ -32,7 +43,12 @@ export function useWS({
     }
 
     return () => {
+      active = false
       clearTimeout(timeout)
+      ws.ws.onopen = null
+      ws.ws.onclose = null
+      ws.ws.onerror = null
+      ws.ws.onmessage = null
       ws.ws.close()
     }
   }, [ws, onMessage, subscribe])

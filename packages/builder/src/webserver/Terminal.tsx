@@ -73,7 +73,17 @@ export function Terminal() {
   const [content, setContent] = useState("")
   const ws = useWS({
     subscribe: useCallback(() => app.ws.subscribe(), []),
-    onMessage: useCallback((event) => setContent(event.data), []),
+    onMessage: useCallback((event) => {
+      const message = JSON.parse(event.data) as {
+        type: "snapshot" | "append"
+        content: string
+      }
+      setContent((currentContent) =>
+        message.type === "snapshot"
+          ? message.content
+          : (currentContent + message.content).slice(-200_000),
+      )
+    }, []),
   })
 
   return (
