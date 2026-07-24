@@ -28,9 +28,13 @@ const cssOutputFile = join(
 const convert = new Convert({ escapeXML: true })
 
 const subscribers = new Map<string, (message: string) => void>()
-const logSubscribers = new Map<string, () => void>()
+const logSubscribers = new Map<
+  string,
+  { send: () => void; close: () => void }
+>()
 
 let lastMessage = ""
+let terminalOutput = ""
 let stats = {
   cpu_percent: null as number | null,
   memory_usage: null as number | null,
@@ -209,35 +213,58 @@ export const startWebappServer = async ({
       }),
 
       async open(ws) {
-        ws.send(
-          await getLogsFromFile({
-            filter: ws.data.query.filter,
-            level: ws.data.query.level,
-            limit: ws.data.query.limit,
-            offset: ws.data.query.offset,
-          }),
-        )
-        logSubscribers.set(ws.id, async () => {
-          ws.send(
-            await getLogsFromFile({
-              filter: ws.data.query.filter,
-              level: ws.data.query.level,
-              limit: ws.data.query.limit,
-              offset: ws.data.query.offset,
-            }),
-          )
+        let closed = false
+        let sending = false
+        let sendAgain = false
+        const send = async () => {
+          if (closed) return
+          if (sending) {
+            sendAgain = true
+            return
+          }
+
+          sending = true
+          try {
+            do {
+              sendAgain = false
+              const logs = await getLogsFromFile({
+                filter: ws.data.query.filter,
+                level: ws.data.query.level,
+                limit: ws.data.query.limit,
+                offset: ws.data.query.offset,
+              })
+              if (!closed) ws.send(logs)
+            } while (sendAgain && !closed)
+          } finally {
+            sending = false
+          }
+        }
+
+        logSubscribers.set(ws.id, {
+          send,
+          close: () => {
+            closed = true
+          },
         })
+        await send()
       },
       close(ws) {
+        logSubscribers.get(ws.id)?.close()
         logSubscribers.delete(ws.id)
       },
     })
     .ws("/ws", {
       response: t.String(),
       async open(ws) {
-        ws.send(lastMessage || "Connected successfully. Awaiting messages...")
+        ws.send(
+          JSON.stringify({
+            type: "snapshot",
+            content:
+              terminalOutput || "Connected successfully. Awaiting messages...",
+          }),
+        )
         subscribers.set(ws.id, (message) => {
-          ws.send(message)
+          ws.send(JSON.stringify({ type: "append", content: message }))
         })
       },
       close(ws) {
@@ -268,7 +295,7 @@ export const startWebappServer = async ({
   logger.debug({ emoji: "👀" }, "Watching log.txt")
   const watcher = watch(directory, function onFileChange(_event, filename) {
     if (filename === "log.txt") {
-      logSubscribers.forEach((send) => send())
+      logSubscribers.forEach((subscriber) => subscriber.send())
     }
   })
 
@@ -344,6 +371,7 @@ const streamAppOutputToSubscribers = async (
         const convertedMessage = convert.toHtml(text)
         if (convertedMessage !== "") {
           lastMessage = convertedMessage
+          terminalOutput = (terminalOutput + convertedMessage).slice(-200_000)
           subscribers.forEach((send) => send(convertedMessage))
         }
         if (done) break

@@ -1,17 +1,12 @@
 // This is an example of a third-party store
 // that you might need to integrate with React.
 
+import type { EdenTreaty } from "@elysiajs/eden/treaty"
+import { useMemo, useState, useSyncExternalStore } from "react"
 import type { LogSchema } from "@typed-assistant/logger"
 import type { levels } from "@typed-assistant/logger/levels"
 import { app } from "./api"
-import type { EdenTreaty } from "@elysiajs/eden/treaty"
-import { useMemo, useState, useSyncExternalStore } from "react"
 
-let listeners: (() => void)[] = []
-let logStore = {
-  logs: [] as LogSchema[],
-  ws: undefined as ReturnType<(typeof app.logsws)["subscribe"]> | undefined,
-}
 export const getLogStore = ({
   level,
   limit,
@@ -22,27 +17,38 @@ export const getLogStore = ({
   limit: string
   offset: string
   filter: string
-}) => ({
-  subscribe: (listener: () => void) => {
-    listeners = [...listeners, listener]
+}) => {
+  let listeners: (() => void)[] = []
+  let reconnectTimeout: ReturnType<typeof setTimeout>
+  let retryCount = 0
+  let active = false
+  let logStore = {
+    logs: [] as LogSchema[],
+    ws: undefined as ReturnType<(typeof app.logsws)["subscribe"]> | undefined,
+  }
+
+  const emitChange = () => {
+    for (const listener of listeners) listener()
+  }
+
+  const connect = () => {
+    if (!active) return
+
     const ws = app.logsws.subscribe({
       $query: { level, limit, offset, filter },
     })
-    logStore = {
-      logs: [],
-      ws,
-    }
+    logStore = { logs: logStore.logs, ws }
     emitChange()
 
     ws.on("open", () => {
-      logStore = {
-        logs: logStore.logs,
-        ws: logStore.ws,
-      }
+      if (!active || logStore.ws !== ws) return
+      retryCount = 0
+      logStore = { ...logStore }
       emitChange()
     })
 
     ws.on("message", (event) => {
+      if (!active || logStore.ws !== ws) return
       logStore = {
         logs: (event as EdenTreaty.OnMessage<{ logs: LogSchema[] }>).data.logs,
         ws,
@@ -50,18 +56,35 @@ export const getLogStore = ({
       emitChange()
     })
 
-    return () => {
-      logStore.ws?.close()
-      listeners = listeners.filter((l) => l !== listener)
-    }
-  },
+    ws.on("error", () => {
+      if (active && logStore.ws === ws) ws.close()
+    })
 
-  getSnapshot: () => logStore,
-})
+    ws.on("close", () => {
+      if (!active || logStore.ws !== ws) return
+      logStore = { ...logStore }
+      emitChange()
 
-function emitChange() {
-  for (let listener of listeners) {
-    listener()
+      const delay = Math.min(1000 * 2 ** retryCount, 30000)
+      retryCount++
+      reconnectTimeout = setTimeout(connect, delay)
+    })
+  }
+
+  return {
+    subscribe: (listener: () => void) => {
+      listeners = [...listeners, listener]
+      active = true
+      connect()
+
+      return () => {
+        active = false
+        clearTimeout(reconnectTimeout)
+        logStore.ws?.close()
+        listeners = listeners.filter((candidate) => candidate !== listener)
+      }
+    },
+    getSnapshot: () => logStore,
   }
 }
 
