@@ -15,6 +15,7 @@ import {
   killSubprocess,
   terminateSubprocess,
 } from "./killProcess"
+import { startMemoryTelemetry } from "./memoryTelemetry"
 import { restartAddon } from "./restartAddon"
 import { setupGitPoller } from "./setupGitPoller"
 import { startWebappServer } from "./setupWebserver"
@@ -41,6 +42,9 @@ export async function setup({
     await terminateSubprocess(subprocesses.app)
   })
 
+  const memoryTelemetry = startMemoryTelemetry(() => subprocesses.app)
+  addKillListener(memoryTelemetry.stop)
+
   await startWebappServer({
     basePath,
     getSubprocesses: () => subprocesses,
@@ -63,6 +67,7 @@ export async function setup({
   })
 
   checkProcesses(entryFile, () => subprocesses, {
+    getMemoryReport: memoryTelemetry.getReport,
     onMultiProcessError: async (ps) => {
       const message = `Multiple processes detected. Restarting addon...`
       logger.fatal({ additionalDetails: ps, emoji: "🚨" }, message)
@@ -159,9 +164,11 @@ const checkProcesses = (
   entryFile: string,
   getSubprocesses: () => Processes,
   {
+    getMemoryReport,
     onMultiProcessError,
     onNoProcessError,
   }: {
+    getMemoryReport?: (pid: number) => string
     onMultiProcessError?: (psOutput: string) => void | Promise<void>
     onNoProcessError?: (psOutput: string) => void | Promise<void>
   },
@@ -221,6 +228,8 @@ const checkProcesses = (
             `Exit code: ${app.exitCode ?? "none"}`,
             `Signal: ${app.signalCode ?? "none"}`,
             `Resource usage: ${resourceUsage ? JSON.stringify(resourceUsage) : "unavailable"}`,
+            getMemoryReport?.(app.pid) ??
+              "Memory telemetry unavailable for this process.",
             `Process table at detection:\n${ps}`,
           ].join("\n"),
         )
