@@ -5,6 +5,7 @@ import {
   ONE_SECOND,
 } from "@typed-assistant/utils/durations"
 import { expect, test, vi } from "vitest"
+import cron from "node-cron"
 import { useEntity } from "./useEntity"
 import { useSchedule } from "./useSchedule"
 
@@ -59,7 +60,7 @@ test("useSchedule schedules actions at specific times", async () => {
   expect(TestComponent).toHaveBeenCalledTimes(1)
 })
 
-test("useSchedule reschedules the task when the component rerenders", async () => {
+test("useSchedule uses the latest callback when the component rerenders", async () => {
   vi.useFakeTimers()
   vi.setSystemTime(new Date("2021-01-01T00:00:00Z"))
   const onChangeCallback = vi.fn(() => {})
@@ -97,6 +98,24 @@ test("useSchedule reschedules the task when the component rerenders", async () =
 
   expect(onChangeCallback).toHaveBeenCalledTimes(1)
   expect(TestComponent).toHaveBeenCalledTimes(3)
+})
+
+test("useSchedule does not retain cron tasks across rerenders", () => {
+  const TestComponent = ({ callback }: { callback: () => void }) => {
+    useSchedule([["01:00", callback]])
+    return null
+  }
+
+  const { rerender, unmount } = render(<TestComponent callback={() => {}} />)
+  expect(cron.getTasks().size).toBe(1)
+
+  for (let index = 0; index < 100; index++) {
+    rerender(<TestComponent callback={() => index} />)
+  }
+
+  expect(cron.getTasks().size).toBe(1)
+  unmount()
+  expect(cron.getTasks().size).toBe(0)
 })
 
 test("useSchedule schedules for the next day when time has already passed", async () => {

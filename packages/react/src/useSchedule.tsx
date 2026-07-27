@@ -112,15 +112,19 @@ export const useSchedule = (
     () => void | Promise<void>,
   ][],
 ) => {
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   const schedule = buildSchedule(...scheduleProp)
-  const tasksRef = useRef<{ stop: () => void }[]>([])
+  const actionsRef = useRef(schedule)
+  actionsRef.current = schedule
+  const scheduleKey = JSON.stringify(Object.keys(schedule))
 
   useEffect(() => {
-    Object.entries(schedule).forEach(([dateString, actionOrig]) => {
+    const tasks: { name?: string; stop: () => void }[] = []
+    const dateStrings = JSON.parse(scheduleKey) as string[]
+
+    dateStrings.forEach((dateString) => {
       if (!dateString) return
       const action = () => {
-        actionOrig()
+        actionsRef.current[dateString]?.()
       }
       const dateStringIsTime = /^[\d]{1,2}:[\d]{2}/m.test(dateString)
       const dateStringIsDayOfWeek = /^mon|tue|wed|thu|fri|sat|sun/im.test(
@@ -132,37 +136,39 @@ export const useSchedule = (
       if (dateStringIsDayOfWeek) {
         const [dayOfWeek, time] = dateString.split("@") as [string, string]
         const [hours, minutes] = time.split(":")
+        const name = `typed-assistant-${crypto.randomUUID()}`
         const task = cron.schedule(
           `${minutes} ${hours} * * ${dayOfWeek}`,
           action,
-          { timezone: "Europe/London" },
+          { name, timezone: "Europe/London" },
         )
-        tasksRef.current.push(task)
+        tasks.push({ name, stop: () => task.stop() })
       } else if (dateStringIsISO) {
         const triggerTime = new Date(dateString)
         const now = new Date()
         if (triggerTime > now) {
           const time = Number(triggerTime) - Number(now)
           const timeoutId = setTimeout(action, time)
-          tasksRef.current.push({ stop: () => clearTimeout(timeoutId) })
+          tasks.push({ stop: () => clearTimeout(timeoutId) })
         }
       } else {
+        const name = `typed-assistant-${crypto.randomUUID()}`
         const task = cron.schedule(
           dateStringIsTime ? convertTimeToCron(dateString) : dateString,
           action,
-          { timezone: "Europe/London" },
+          { name, timezone: "Europe/London" },
         )
-        tasksRef.current.push(task)
+        tasks.push({ name, stop: () => task.stop() })
       }
     })
 
     return () => {
-      tasksRef.current.forEach((task) => {
+      tasks.forEach((task) => {
         task.stop()
+        if (task.name) cron.getTasks().delete(task.name)
       })
-      tasksRef.current = []
     }
-  }, [schedule])
+  }, [scheduleKey])
 }
 
 /**
