@@ -1,5 +1,11 @@
 # @typed-assistant/react
 
+## 0.0.50
+
+### Patch Changes
+
+- 3c827e9: Record bounded child-process and cgroup memory telemetry for exit diagnostics, and prevent scheduled cron tasks from being retained across React rerenders.
+
 ## 0.0.49
 
 ### Patch Changes
