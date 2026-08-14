@@ -1,4 +1,5 @@
 import { Status } from "@typed-assistant/react/Status"
+import { createInkStdout } from "@typed-assistant/builder/inkOutput"
 import { render } from "ink"
 import { latestCommitId } from "./.gen/commit"
 import { App } from "./app"
@@ -9,5 +10,5 @@ render(
     <Status connection={connection} latestCommitId={latestCommitId} />
     <App />
   </>,
-  { debug: true, patchConsole: false },
+  { debug: true, patchConsole: false, stdout: createInkStdout() },
 )

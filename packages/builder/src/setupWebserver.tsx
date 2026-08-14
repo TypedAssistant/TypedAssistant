@@ -13,6 +13,7 @@ import { basename, join } from "path"
 import type { List, String } from "ts-toolbelt"
 import { createFrameBatcher } from "./frameBatcher"
 import { getAddonInfo } from "./getAddonInfo"
+import { createInkFrameParser } from "./inkOutput"
 import { addKillListener, killSubprocess } from "./killProcess"
 import { restartAddon } from "./restartAddon"
 
@@ -417,11 +418,21 @@ const streamAppOutputToSubscribers = async (
       continue
     }
     currentApp = app
-    // Ink can split one render across multiple pipe reads. Treat a short burst
-    // of stdout as one frame so the browser can replace the previous render.
+    // Framed output has exact render boundaries even when a large Ink write is
+    // split across pipe reads. Keep the timed batcher for existing apps.
     const stdoutFrames = createFrameBatcher(publishFrame)
+    const stdoutParser = createInkFrameParser({
+      onFrame: (frame) => {
+        stdoutFrames.flush()
+        publishFrame(frame)
+      },
+      onUnframedOutput: stdoutFrames.push,
+    })
     await Promise.all([
-      pumpStream(app.stdout, stdoutFrames.push, stdoutFrames.flush),
+      pumpStream(app.stdout, stdoutParser.push, () => {
+        stdoutParser.flush()
+        stdoutFrames.flush()
+      }),
       pumpStream(app.stderr, appendOutput),
     ]).catch((error) => {
       logger.error(
