@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.100
+
+### Patch Changes
+
+- 5fa2aa8: Stop truncating tall terminal frames when diagnostic output is appended.
+
 ## 0.0.99
 
 ### Patch Changes
