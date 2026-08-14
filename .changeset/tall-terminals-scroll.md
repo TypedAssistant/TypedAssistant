@@ -2,4 +2,5 @@
 "@typed-assistant/builder": patch
 ---
 
-Allow tall Ink frames to use the full document height in the web dashboard.
+Preserve complete tall Ink frames across streamed output chunks and allow them
+to use the full document height in the web dashboard.

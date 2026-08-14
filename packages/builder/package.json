@@ -9,6 +9,7 @@
   "exports": {
     "./appProcess": "./src/appProcess.tsx",
     "./bunInstall": "./src/bunInstall.tsx",
+    "./inkOutput": "./src/inkOutput.ts",
     "./pullChanges": "./src/pullChanges.tsx"
   },
   "publishConfig": {
