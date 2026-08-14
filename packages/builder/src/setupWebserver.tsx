@@ -16,6 +16,10 @@ import { getAddonInfo } from "./getAddonInfo"
 import { createInkFrameParser } from "./inkOutput"
 import { addKillListener, killSubprocess } from "./killProcess"
 import { restartAddon } from "./restartAddon"
+import {
+  type TerminalMessage,
+  updateTerminalContent,
+} from "./webserver/terminalContent"
 
 const indexHtmlFilePath = `${import.meta.dir}/webserver/index.html` as const
 const cssFile = `${import.meta.dir}/webserver/input.css` as const
@@ -30,12 +34,9 @@ const cssOutputFile = join(
 const convertToHtml = (text: string) =>
   new Convert({ escapeXML: true }).toHtml(text)
 
-type TerminalMessage = {
-  type: "append" | "frame"
-  content: string
-}
+type TerminalUpdate = TerminalMessage & { type: "append" | "frame" }
 
-const subscribers = new Map<string, (message: TerminalMessage) => void>()
+const subscribers = new Map<string, (message: TerminalUpdate) => void>()
 const logSubscribers = new Map<
   string,
   { send: () => void; close: () => void }
@@ -365,7 +366,8 @@ const streamAppOutputToSubscribers = async (
     app: Subprocess<"ignore", "pipe", "pipe">
   },
 ) => {
-  const publish = (message: TerminalMessage) => {
+  const publish = (message: TerminalUpdate) => {
+    terminalOutput = updateTerminalContent(terminalOutput, message)
     subscribers.forEach((send) => send(message))
   }
   const publishFrame = (frame: string) => {
@@ -373,7 +375,6 @@ const streamAppOutputToSubscribers = async (
     if (convertedFrame === "") return
 
     lastMessage = convertedFrame
-    terminalOutput = convertedFrame
     publish({ type: "frame", content: convertedFrame })
   }
   const appendOutput = (text: string) => {
@@ -381,7 +382,6 @@ const streamAppOutputToSubscribers = async (
     if (convertedMessage === "") return
 
     lastMessage = convertedMessage
-    terminalOutput = (terminalOutput + convertedMessage).slice(-200_000)
     publish({ type: "append", content: convertedMessage })
   }
   const pumpStream = async (
