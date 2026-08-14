@@ -5,6 +5,7 @@ import { WSIndicator } from "./WSIndicator"
 import { app } from "./api"
 import { buttonStyle } from "./styles"
 import { useWS } from "./useWS"
+import { type TerminalMessage, updateTerminalContent } from "./terminalContent"
 
 type ButtonAsyncProps = {
   onClick: () => Promise<{ error?: unknown }>
@@ -74,14 +75,9 @@ export function Terminal() {
   const ws = useWS({
     subscribe: useCallback(() => app.ws.subscribe(), []),
     onMessage: useCallback((event) => {
-      const message = JSON.parse(event.data) as {
-        type: "snapshot" | "append" | "frame"
-        content: string
-      }
+      const message = JSON.parse(event.data) as TerminalMessage
       setContent((currentContent) =>
-        message.type === "snapshot" || message.type === "frame"
-          ? message.content
-          : (currentContent + message.content).slice(-200_000),
+        updateTerminalContent(currentContent, message),
       )
     }, []),
   })
