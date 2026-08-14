@@ -4,12 +4,14 @@ import { twMerge } from "tailwind-merge"
 export const AppSection = ({
   children,
   className,
+  constrainHeight = true,
   fullHeight = true,
   renderHeader,
   scrollable = true,
 }: {
   children: ReactNode
   className?: string
+  constrainHeight?: boolean
   fullHeight?: boolean
   renderHeader?: () => JSX.Element
   scrollable?: boolean
@@ -17,7 +19,8 @@ export const AppSection = ({
   return (
     <div
       className={twMerge(
-        "p-4 text-xs max-h-dvh w-dvw md:w-auto flex flex-col",
+        "p-4 text-xs w-dvw md:w-auto flex flex-col",
+        constrainHeight ? "max-h-dvh" : "",
         fullHeight ? "h-full" : "",
         scrollable ? "overflow-x-auto" : "",
         className ?? "",
