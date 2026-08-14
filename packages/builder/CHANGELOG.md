@@ -1,5 +1,11 @@
 # @typed-assistant/builder
 
+## 0.0.98
+
+### Patch Changes
+
+- 9f97eef: Replace completed Ink frames in the web dashboard instead of appending every rerender.
+
 ## 0.0.97
 
 ### Patch Changes
