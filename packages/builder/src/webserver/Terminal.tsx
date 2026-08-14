@@ -75,11 +75,11 @@ export function Terminal() {
     subscribe: useCallback(() => app.ws.subscribe(), []),
     onMessage: useCallback((event) => {
       const message = JSON.parse(event.data) as {
-        type: "snapshot" | "append"
+        type: "snapshot" | "append" | "frame"
         content: string
       }
       setContent((currentContent) =>
-        message.type === "snapshot"
+        message.type === "snapshot" || message.type === "frame"
           ? message.content
           : (currentContent + message.content).slice(-200_000),
       )
