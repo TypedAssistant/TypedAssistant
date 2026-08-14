@@ -11,6 +11,7 @@ import { Elysia, t } from "elysia"
 import { watch } from "fs"
 import { basename, join } from "path"
 import type { List, String } from "ts-toolbelt"
+import { createFrameBatcher } from "./frameBatcher"
 import { getAddonInfo } from "./getAddonInfo"
 import { addKillListener, killSubprocess } from "./killProcess"
 import { restartAddon } from "./restartAddon"
@@ -25,9 +26,15 @@ const cssOutputFile = join(
   `./build/output.css`,
 ) as `${string}/output.css`
 
-const convert = new Convert({ escapeXML: true })
+const convertToHtml = (text: string) =>
+  new Convert({ escapeXML: true }).toHtml(text)
 
-const subscribers = new Map<string, (message: string) => void>()
+type TerminalMessage = {
+  type: "append" | "frame"
+  content: string
+}
+
+const subscribers = new Map<string, (message: TerminalMessage) => void>()
 const logSubscribers = new Map<
   string,
   { send: () => void; close: () => void }
@@ -264,7 +271,7 @@ export const startWebappServer = async ({
           }),
         )
         subscribers.set(ws.id, (message) => {
-          ws.send(JSON.stringify({ type: "append", content: message }))
+          ws.send(JSON.stringify(message))
         })
       },
       close(ws) {
@@ -357,7 +364,30 @@ const streamAppOutputToSubscribers = async (
     app: Subprocess<"ignore", "pipe", "pipe">
   },
 ) => {
-  const pumpStream = async (stream: ReadableStream<Uint8Array>) => {
+  const publish = (message: TerminalMessage) => {
+    subscribers.forEach((send) => send(message))
+  }
+  const publishFrame = (frame: string) => {
+    const convertedFrame = convertToHtml(frame)
+    if (convertedFrame === "") return
+
+    lastMessage = convertedFrame
+    terminalOutput = convertedFrame
+    publish({ type: "frame", content: convertedFrame })
+  }
+  const appendOutput = (text: string) => {
+    const convertedMessage = convertToHtml(text)
+    if (convertedMessage === "") return
+
+    lastMessage = convertedMessage
+    terminalOutput = (terminalOutput + convertedMessage).slice(-200_000)
+    publish({ type: "append", content: convertedMessage })
+  }
+  const pumpStream = async (
+    stream: ReadableStream<Uint8Array>,
+    onText: (text: string) => void,
+    onDone?: () => void,
+  ) => {
     const reader = stream.getReader()
     const decoder = new TextDecoder()
     try {
@@ -368,15 +398,11 @@ const streamAppOutputToSubscribers = async (
         const text = done
           ? decoder.decode()
           : decoder.decode(value, { stream: true })
-        const convertedMessage = convert.toHtml(text)
-        if (convertedMessage !== "") {
-          lastMessage = convertedMessage
-          terminalOutput = (terminalOutput + convertedMessage).slice(-200_000)
-          subscribers.forEach((send) => send(convertedMessage))
-        }
+        onText(text)
         if (done) break
       }
     } finally {
+      onDone?.()
       reader.releaseLock()
     }
   }
@@ -391,25 +417,29 @@ const streamAppOutputToSubscribers = async (
       continue
     }
     currentApp = app
-    await Promise.all([pumpStream(app.stdout), pumpStream(app.stderr)]).catch(
-      (error) => {
-        logger.error(
-          {
-            additionalDetails:
-              error instanceof Error ? error.message : `${error}`,
-            emoji: "🚨",
-          },
-          "Error reading app process output",
-        )
-      },
-    )
+    // Ink can split one render across multiple pipe reads. Treat a short burst
+    // of stdout as one frame so the browser can replace the previous render.
+    const stdoutFrames = createFrameBatcher(publishFrame)
+    await Promise.all([
+      pumpStream(app.stdout, stdoutFrames.push, stdoutFrames.flush),
+      pumpStream(app.stderr, appendOutput),
+    ]).catch((error) => {
+      logger.error(
+        {
+          additionalDetails:
+            error instanceof Error ? error.message : `${error}`,
+          emoji: "🚨",
+        },
+        "Error reading app process output",
+      )
+    })
     logger.warn({ emoji: "💀" }, "App process output streams ended")
-    subscribers.forEach((send) =>
-      send(
+    publish({
+      type: "append",
+      content:
         "App process exited. Waiting for it to restart...\n\nThis was the last message:\n\n" +
-          lastMessage,
-      ),
-    )
+        lastMessage,
+    })
   }
 }
 
