@@ -88,6 +88,8 @@ export function Terminal() {
 
   return (
     <AppSection
+      constrainHeight={false}
+      fullHeight={false}
       renderHeader={() => (
         <>
           <h1 className="mb-2 text-2xl flex items-baseline gap-3">
