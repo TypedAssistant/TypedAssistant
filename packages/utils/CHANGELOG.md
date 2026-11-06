@@ -1,5 +1,11 @@
 # @typed-assistant/utils
 
+## 0.0.22
+
+### Patch Changes
+
+- Fix for generating types when examples have invalid JSON.
+
 ## 0.0.21
 
 ### Patch Changes

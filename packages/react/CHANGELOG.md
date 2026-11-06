@@ -1,5 +1,13 @@
 # @typed-assistant/react
 
+## 0.0.51
+
+### Patch Changes
+
+- Updated dependencies
+  - @typed-assistant/utils@0.0.22
+  - @typed-assistant/connection@0.0.32
+
 ## 0.0.50
 
 ### Patch Changes

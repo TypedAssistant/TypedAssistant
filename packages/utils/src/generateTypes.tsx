@@ -1,6 +1,7 @@
 import { logger } from "@typed-assistant/logger"
 import { getHassAPI } from "./getHassAPI"
 import { withErrorHandling } from "./withErrorHandling"
+import { inferArrayExampleType } from "./inferArrayExampleType"
 import { $ } from "bun"
 import {
   existsSync,
@@ -95,9 +96,7 @@ export type GeneratedServices = {
               **/
               ${service}${required ? "" : "?"}: ${
                 typeof example === "string" && example.startsWith("[")
-                  ? JSON.stringify(
-                      JSON.parse(example).map((item: unknown) => typeof item),
-                    ).replace(/"/g, "")
+                  ? inferArrayExampleType(example)
                   : selector?.object !== undefined
                     ? "Record<string, unknown>"
                     : selector?.entity?.domain !== undefined
